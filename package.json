@@ -1,0 +1,16 @@
+{
+  "name": "rapid-api-generator",
+  "version": "1.0.0",
+  "description": "A tool for generating RapidAPI integration code with confirmation prompts for file operations",
+  "main": "index.js",
+  "bin": {
+    "rapid-api-gen": "./cli.js"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "test": "node test.js"
+  },
+  "keywords": ["rapidapi", "api", "generator", "cli"],
+  "author": "",
+  "license": "ISC"
+}
