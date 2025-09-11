@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="45" fill="url(#gradient)" />
+  
+  <!-- Rocket icon -->
+  <path d="M50 20 L45 35 L35 30 L40 45 L30 50 L45 55 L35 70 L50 65 L65 70 L55 55 L70 50 L60 45 L65 30 L55 35 Z" 
+        fill="white" opacity="0.9"/>
+  
+  <!-- Code brackets -->
+  <text x="25" y="75" font-family="monospace" font-size="12" fill="white" opacity="0.8">&lt;/&gt;</text>
+  <text x="65" y="30" font-family="monospace" font-size="8" fill="white" opacity="0.6">TS</text>
+</svg>
