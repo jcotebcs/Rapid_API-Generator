@@ -1,0 +1,126 @@
+{
+  "name": "rapidapi-generator",
+  "displayName": "RapidAPI Generator",
+  "description": "VS Code extension for RapidAPI integration with CodeLLM/Copilot support",
+  "version": "1.0.0",
+  "publisher": "rapidapi",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other",
+    "Snippets",
+    "Formatters"
+  ],
+  "keywords": [
+    "rapidapi",
+    "api",
+    "codellm",
+    "copilot",
+    "openapi",
+    "swagger",
+    "rest",
+    "http"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onCommand:rapidapi.generateEndpoint",
+    "onCommand:rapidapi.setupEnvironment",
+    "onCommand:rapidapi.openPreview"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "rapidapi.generateEndpoint",
+        "title": "Generate RapidAPI Endpoint",
+        "category": "RapidAPI"
+      },
+      {
+        "command": "rapidapi.setupEnvironment",
+        "title": "Setup RapidAPI Environment",
+        "category": "RapidAPI"
+      },
+      {
+        "command": "rapidapi.openPreview",
+        "title": "Open RapidAPI Preview",
+        "category": "RapidAPI"
+      },
+      {
+        "command": "rapidapi.refreshApiExplorer",
+        "title": "Refresh",
+        "icon": "$(refresh)"
+      }
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "rapidapiExplorer",
+          "name": "RapidAPI Explorer",
+          "when": "rapidapi:enabled"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "RapidAPI Generator",
+      "properties": {
+        "rapidapi.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "Your RapidAPI key"
+        },
+        "rapidapi.autoGenerateTypes": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically generate TypeScript types from OpenAPI schemas"
+        },
+        "rapidapi.outputDirectory": {
+          "type": "string",
+          "default": "./src/api",
+          "description": "Directory to output generated API files"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js",
+    "package": "vsce package",
+    "install:local": "code --install-extension rapidapi-generator-1.0.0.vsix"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "16.x",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "eslint": "^8.28.0",
+    "typescript": "^4.9.4",
+    "@vscode/test-electron": "^2.2.0",
+    "vsce": "^2.15.0",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1",
+    "ts-loader": "^9.4.1"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "openapi-typescript": "^6.7.0",
+    "yaml": "^2.3.4",
+    "dotenv": "^16.3.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jcotebcs/Rapid_API-Generator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jcotebcs/Rapid_API-Generator/issues"
+  },
+  "homepage": "https://github.com/jcotebcs/Rapid_API-Generator#readme",
+  "license": "MIT",
+  "galleryBanner": {
+    "color": "#1e1e1e",
+    "theme": "dark"
+  }
+}

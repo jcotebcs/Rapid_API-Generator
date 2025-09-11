@@ -1,0 +1,38 @@
+{
+  "name": "create-rapidapi-extension",
+  "version": "1.0.0",
+  "description": "NPX installer for RapidAPI VS Code Extension",
+  "main": "bin/cli.js",
+  "bin": {
+    "create-rapidapi-extension": "bin/cli.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "rapidapi",
+    "vscode",
+    "extension",
+    "installer",
+    "cli",
+    "npx"
+  ],
+  "author": "RapidAPI",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "inquirer": "^8.2.6",
+    "ora": "^5.4.1",
+    "fs-extra": "^11.2.0",
+    "node-fetch": "^2.7.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jcotebcs/Rapid_API-Generator.git",
+    "directory": "npx-installer"
+  },
+  "bugs": {
+    "url": "https://github.com/jcotebcs/Rapid_API-Generator/issues"
+  },
+  "homepage": "https://github.com/jcotebcs/Rapid_API-Generator#readme"
+}
