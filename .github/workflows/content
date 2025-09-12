@@ -1,0 +1,54 @@
+name: Deploy Rapid API Generator
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}  # Allows pushing changes
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: '**/package-lock.json'
+
+    - name: Run package_manager_script.py
+      run: python3 package_manager_script.py
+
+    - name: Commit generated lock files
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add package.json package-lock.json
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "Auto-generate package.json and package-lock.json"
+          git push
+        fi
+
+    - name: Verify files
+      run: ls -l package.json package-lock.json
+
+    - name: Continue with build steps
+      run: |
+        # Add your existing build/test/deploy steps here
+        echo "Running additional build steps..."
+        # Example: npm ci && npm test
