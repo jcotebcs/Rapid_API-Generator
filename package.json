@@ -1,0 +1,23 @@
+{
+  "name": "rapidapi-generator-examples",
+  "version": "1.0.0",
+  "description": "Examples for using RapidAPI with secure API key management",
+  "main": "rapidapi_example.js",
+  "scripts": {
+    "start": "node rapidapi_example.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "rapidapi",
+    "api",
+    "example",
+    "nodejs",
+    "axios"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.0"
+  }
+}
