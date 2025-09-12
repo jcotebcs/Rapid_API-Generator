@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notion API Debugger - Web Interface</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            background: #f7f8fa;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f8f9fb;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        .section h2 {
+            margin-top: 0;
+            color: #2d3748;
+            font-size: 1.5em;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+        .btn:hover {
+            background: #5a67d8;
+            transform: translateY(-1px);
+        }
+        .btn:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-secondary {
+            background: #718096;
+        }
+        .btn-secondary:hover {
+            background: #4a5568;
+        }
+        .btn-danger {
+            background: #e53e3e;
+        }
+        .btn-danger:hover {
+            background: #c53030;
+        }
+        .alert {
+            padding: 16px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border-left: 4px solid;
+        }
+        .alert-success {
+            background: #f0fff4;
+            border-left-color: #38a169;
+            color: #2f855a;
+        }
+        .alert-error {
+            background: #fed7d7;
+            border-left-color: #e53e3e;
+            color: #c53030;
+        }
+        .alert-warning {
+            background: #fefcbf;
+            border-left-color: #d69e2e;
+            color: #b7791f;
+        }
+        .results {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 6px;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .results.hidden {
+            display: none;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #718096;
+        }
+        .spinner {
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            .content {
+                padding: 20px;
+            }
+            .header {
+                padding: 20px;
+            }
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-pass { background: #38a169; }
+        .status-fail { background: #e53e3e; }
+        .status-pending { background: #d69e2e; }
+        .test-summary {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .test-summary h3 {
+            margin-top: 0;
+            color: #2d3748;
+        }
+        .test-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .test-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Notion API Debugger</h1>
+            <p>Comprehensive diagnostic tool for Notion API connection issues</p>
+        </div>
+        
+        <div class="content">
+            <!-- Configuration Section -->
+            <div class="section">
+                <h2>🔧 Configuration</h2>
+                <div class="grid">
+                    <div class="form-group">
+                        <label for="notionApiKey">Notion API Key</label>
+                        <input type="password" id="notionApiKey" placeholder="secret_...">
+                        <small style="color: #718096; margin-top: 4px; display: block;">
+                            Get your integration key from <a href="https://www.notion.so/my-integrations" target="_blank">Notion Integrations</a>
+                        </small>
+                    </div>
+                    <div class="form-group">
+                        <label for="databaseId">Database ID (Optional)</label>
+                        <input type="text" id="databaseId" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx">
+                        <small style="color: #718096; margin-top: 4px; display: block;">
+                            Extract from your database URL in Notion
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="backendUrl">Backend URL (if using proxy)</label>
+                    <input type="url" id="backendUrl" placeholder="https://your-backend.com" value="http://localhost:3000">
+                    <small style="color: #718096; margin-top: 4px; display: block;">
+                        Leave empty to test direct API access (may have CORS issues)
+                    </small>
+                </div>
+            </div>
+
+            <!-- Quick Actions Section -->
+            <div class="section">
+                <h2>🚀 Quick Actions</h2>
+                <button class="btn" onclick="runBasicDiagnostic()">Run Basic Diagnostic</button>
+                <button class="btn" onclick="runFullDiagnostic()">Run Full Diagnostic</button>
+                <button class="btn btn-secondary" onclick="testBackendEndpoints()">Test Backend Endpoints</button>
+                <button class="btn btn-secondary" onclick="validateConfiguration()">Validate Configuration</button>
+                <button class="btn btn-danger" onclick="clearResults()">Clear Results</button>
+            </div>
+
+            <!-- Test Summary -->
+            <div id="testSummary" class="test-summary" style="display: none;">
+                <h3>📊 Test Results Summary</h3>
+                <div id="testItems"></div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="section">
+                <h2>📋 Results</h2>
+                <div id="loadingIndicator" class="loading hidden">
+                    <div class="spinner"></div>
+                    <p>Running diagnostics...</p>
+                </div>
+                <div id="alertContainer"></div>
+                <div id="results" class="results hidden"></div>
+            </div>
+
+            <!-- Troubleshooting Guide -->
+            <div class="section">
+                <h2>🛠️ Common Issues & Solutions</h2>
+                <details style="margin-bottom: 20px;">
+                    <summary style="cursor: pointer; font-weight: 600; padding: 10px 0;">401 Unauthorized Error</summary>
+                    <div style="padding: 10px 0; border-left: 3px solid #e53e3e; padding-left: 15px; margin-left: 10px;">
+                        <p><strong>Causes:</strong></p>
+                        <ul>
+                            <li>Invalid or missing Notion API key</li>
+                            <li>API key format is incorrect</li>
+                            <li>Integration has been disabled</li>
+                        </ul>
+                        <p><strong>Solutions:</strong></p>
+                        <ul>
+                            <li>Check your API key at <a href="https://www.notion.so/my-integrations" target="_blank">Notion Integrations</a></li>
+                            <li>Ensure the key starts with "secret_"</li>
+                            <li>Regenerate the integration if necessary</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details style="margin-bottom: 20px;">
+                    <summary style="cursor: pointer; font-weight: 600; padding: 10px 0;">403 Forbidden Error</summary>
+                    <div style="padding: 10px 0; border-left: 3px solid #d69e2e; padding-left: 15px; margin-left: 10px;">
+                        <p><strong>Causes:</strong></p>
+                        <ul>
+                            <li>Integration not shared with the database</li>
+                            <li>Insufficient permissions</li>
+                            <li>Database doesn't exist or is private</li>
+                        </ul>
+                        <p><strong>Solutions:</strong></p>
+                        <ul>
+                            <li>Go to your Notion database → Share → Invite your integration</li>
+                            <li>Grant "Edit" permissions to the integration</li>
+                            <li>Verify the database ID is correct</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details style="margin-bottom: 20px;">
+                    <summary style="cursor: pointer; font-weight: 600; padding: 10px 0;">404 Not Found Error</summary>
+                    <div style="padding: 10px 0; border-left: 3px solid #38a169; padding-left: 15px; margin-left: 10px;">
+                        <p><strong>Causes:</strong></p>
+                        <ul>
+                            <li>Incorrect database ID format</li>
+                            <li>Database ID doesn't exist</li>
+                            <li>Integration doesn't have access</li>
+                        </ul>
+                        <p><strong>Solutions:</strong></p>
+                        <ul>
+                            <li>Extract database ID from Notion URL correctly</li>
+                            <li>Ensure database is shared with integration</li>
+                            <li>Check for typos in the database ID</li>
+                        </ul>
+                    </div>
+                </details>
+
+                <details>
+                    <summary style="cursor: pointer; font-weight: 600; padding: 10px 0;">CORS Issues</summary>
+                    <div style="padding: 10px 0; border-left: 3px solid #667eea; padding-left: 15px; margin-left: 10px;">
+                        <p><strong>Problem:</strong> Browser blocks direct API calls to Notion</p>
+                        <p><strong>Solution:</strong> Use a backend proxy server</p>
+                        <ul>
+                            <li>Deploy the included <code>notion_api_backend.js</code></li>
+                            <li>Set backend URL in configuration above</li>
+                            <li>Never expose API keys in frontend code</li>
+                        </ul>
+                    </div>
+                </details>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let testResults = {};
+
+        function showAlert(message, type = 'error') {
+            const alertContainer = document.getElementById('alertContainer');
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alertContainer.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 5000);
+        }
+
+        function showLoading() {
+            document.getElementById('loadingIndicator').classList.remove('hidden');
+            document.getElementById('results').classList.add('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingIndicator').classList.add('hidden');
+        }
+
+        function updateResults(content) {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.textContent = content;
+            resultsDiv.classList.remove('hidden');
+            hideLoading();
+        }
+
+        function updateTestSummary() {
+            const summaryDiv = document.getElementById('testSummary');
+            const itemsDiv = document.getElementById('testItems');
+            
+            const tests = [
+                { key: 'envCheck', name: 'Environment Variable Check' },
+                { key: 'basicConnection', name: 'Basic API Connection' },
+                { key: 'databaseAccess', name: 'Database Access' },
+                { key: 'databaseQuery', name: 'Database Query' },
+                { key: 'pageCreation', name: 'Page Creation' }
+            ];
+            
+            itemsDiv.innerHTML = '';
+            
+            tests.forEach(test => {
+                const item = document.createElement('div');
+                item.className = 'test-item';
+                
+                const status = testResults[test.key];
+                let statusClass = 'status-pending';
+                if (status === true) statusClass = 'status-pass';
+                if (status === false) statusClass = 'status-fail';
+                
+                item.innerHTML = `
+                    <span class="status-indicator ${statusClass}"></span>
+                    <span>${test.name}</span>
+                `;
+                
+                itemsDiv.appendChild(item);
+            });
+            
+            summaryDiv.style.display = 'block';
+        }
+
+        function getConfiguration() {
+            const apiKey = document.getElementById('notionApiKey').value.trim();
+            const databaseId = document.getElementById('databaseId').value.trim();
+            const backendUrl = document.getElementById('backendUrl').value.trim();
+            
+            if (!apiKey) {
+                showAlert('Please enter your Notion API key');
+                return null;
+            }
+            
+            return { apiKey, databaseId, backendUrl };
+        }
+
+        async function makeApiCall(endpoint, options = {}) {
+            const config = getConfiguration();
+            if (!config) return null;
+            
+            if (config.backendUrl) {
+                // Use backend proxy
+                const url = `${config.backendUrl}${endpoint}`;
+                return await fetch(url, {
+                    ...options,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    }
+                });
+            } else {
+                // Direct API call (may have CORS issues)
+                const url = `https://api.notion.com/v1${endpoint}`;
+                return await fetch(url, {
+                    ...options,
+                    headers: {
+                        'Authorization': `Bearer ${config.apiKey}`,
+                        'Notion-Version': '2022-06-28',
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    }
+                });
+            }
+        }
+
+        async function validateConfiguration() {
+            const config = getConfiguration();
+            if (!config) return;
+            
+            showLoading();
+            updateTestSummary();
+            
+            let log = 'Configuration Validation\n';
+            log += '='.repeat(50) + '\n\n';
+            
+            // Validate API key format
+            if (config.apiKey.length !== 32 && !config.apiKey.startsWith('secret_')) {
+                log += '❌ API Key Format Invalid\n';
+                log += '   Expected: 32-character secret starting with "secret_" or internal integration token\n';
+                log += `   Received: ${config.apiKey.length} characters\n\n`;
+                testResults.envCheck = false;
+            } else {
+                log += '✅ API Key Format Valid\n\n';
+                testResults.envCheck = true;
+            }
+            
+            // Validate database ID format (if provided)
+            if (config.databaseId) {
+                const cleanId = config.databaseId.replace(/-/g, '');
+                const uuidRegex = /^[0-9a-f]{32}$/i;
+                if (!uuidRegex.test(cleanId)) {
+                    log += '❌ Database ID Format Invalid\n';
+                    log += '   Expected: 32-character UUID (with or without hyphens)\n';
+                    log += `   Received: ${config.databaseId}\n\n`;
+                } else {
+                    log += '✅ Database ID Format Valid\n\n';
+                }
+            }
+            
+            // Check backend URL (if provided)
+            if (config.backendUrl) {
+                try {
+                    new URL(config.backendUrl);
+                    log += '✅ Backend URL Format Valid\n';
+                    log += `   Backend: ${config.backendUrl}\n\n`;
+                } catch (e) {
+                    log += '❌ Backend URL Format Invalid\n';
+                    log += `   URL: ${config.backendUrl}\n\n`;
+                }
+            } else {
+                log += '⚠️  No Backend URL - Direct API calls may have CORS issues\n\n';
+            }
+            
+            updateResults(log);
+            updateTestSummary();
+        }
+
+        async function runBasicDiagnostic() {
+            const config = getConfiguration();
+            if (!config) return;
+            
+            showLoading();
+            testResults = {};
+            updateTestSummary();
+            
+            let log = 'Basic Notion API Diagnostic\n';
+            log += '='.repeat(50) + '\n\n';
+            
+            try {
+                // Test basic connection
+                log += 'Testing basic API connection...\n';
+                const response = await makeApiCall('/users/me');
+                
+                if (response && response.ok) {
+                    const data = await response.json();
+                    log += '✅ Basic connection successful\n';
+                    log += `   User ID: ${data.id}\n`;
+                    log += `   User Type: ${data.type}\n`;
+                    log += `   User Name: ${data.name || 'N/A'}\n\n`;
+                    testResults.basicConnection = true;
+                    showAlert('Basic connection successful!', 'success');
+                } else {
+                    const errorData = response ? await response.json() : null;
+                    log += '❌ Basic connection failed\n';
+                    log += `   Status: ${response?.status}\n`;
+                    log += `   Error: ${errorData?.message || 'Unknown error'}\n\n`;
+                    testResults.basicConnection = false;
+                    showAlert('Basic connection failed. Check your API key.', 'error');
+                }
+            } catch (error) {
+                log += '❌ Connection error\n';
+                log += `   Error: ${error.message}\n\n`;
+                testResults.basicConnection = false;
+                showAlert('Connection error. Check your network and configuration.', 'error');
+            }
+            
+            updateResults(log);
+            updateTestSummary();
+        }
+
+        async function runFullDiagnostic() {
+            const config = getConfiguration();
+            if (!config) return;
+            
+            if (!config.databaseId) {
+                showAlert('Database ID is required for full diagnostic', 'warning');
+                return;
+            }
+            
+            showLoading();
+            testResults = {};
+            updateTestSummary();
+            
+            let log = 'Full Notion API Diagnostic\n';
+            log += '='.repeat(50) + '\n\n';
+            
+            try {
+                // Test 1: Basic connection
+                log += 'Step 1: Testing basic API connection...\n';
+                const basicResponse = await makeApiCall('/users/me');
+                
+                if (basicResponse && basicResponse.ok) {
+                    const data = await basicResponse.json();
+                    log += '✅ Basic connection successful\n';
+                    log += `   User ID: ${data.id}\n\n`;
+                    testResults.basicConnection = true;
+                } else {
+                    log += '❌ Basic connection failed\n';
+                    testResults.basicConnection = false;
+                    updateResults(log);
+                    updateTestSummary();
+                    return;
+                }
+                
+                // Test 2: Database access
+                log += 'Step 2: Testing database access...\n';
+                const dbResponse = await makeApiCall(`/databases/${config.databaseId}`);
+                
+                if (dbResponse && dbResponse.ok) {
+                    const dbData = await dbResponse.json();
+                    log += '✅ Database access successful\n';
+                    log += `   Database Title: ${dbData.title[0]?.plain_text || 'Untitled'}\n\n`;
+                    testResults.databaseAccess = true;
+                } else {
+                    const errorData = dbResponse ? await dbResponse.json() : null;
+                    log += '❌ Database access failed\n';
+                    log += `   Error: ${errorData?.message || 'Unknown error'}\n\n`;
+                    testResults.databaseAccess = false;
+                }
+                
+                // Test 3: Database query (only if database access succeeded)
+                if (testResults.databaseAccess) {
+                    log += 'Step 3: Testing database query...\n';
+                    const queryResponse = await makeApiCall(`/databases/${config.databaseId}/query`, {
+                        method: 'POST',
+                        body: JSON.stringify({ page_size: 1 })
+                    });
+                    
+                    if (queryResponse && queryResponse.ok) {
+                        const queryData = await queryResponse.json();
+                        log += '✅ Database query successful\n';
+                        log += `   Results: ${queryData.results.length}\n\n`;
+                        testResults.databaseQuery = true;
+                    } else {
+                        log += '❌ Database query failed\n';
+                        testResults.databaseQuery = false;
+                    }
+                }
+                
+            } catch (error) {
+                log += `❌ Diagnostic error: ${error.message}\n\n`;
+            }
+            
+            // Summary
+            const passCount = Object.values(testResults).filter(Boolean).length;
+            const totalTests = Object.keys(testResults).length;
+            log += `Summary: ${passCount}/${totalTests} tests passed\n`;
+            
+            if (passCount === totalTests) {
+                log += '\n🎉 All tests passed! Your Notion API configuration is working correctly.';
+                showAlert('Full diagnostic completed successfully!', 'success');
+            } else {
+                log += '\n🔧 Some tests failed. Check the troubleshooting guide below.';
+                showAlert('Some tests failed. Check the results for details.', 'warning');
+            }
+            
+            updateResults(log);
+            updateTestSummary();
+        }
+
+        async function testBackendEndpoints() {
+            const config = getConfiguration();
+            if (!config) return;
+            
+            if (!config.backendUrl) {
+                showAlert('Backend URL is required for backend testing', 'warning');
+                return;
+            }
+            
+            showLoading();
+            
+            let log = 'Backend Endpoints Test\n';
+            log += '='.repeat(50) + '\n\n';
+            
+            const endpoints = [
+                { path: '/health', name: 'Health Check' },
+                { path: '/api/debug-env', name: 'Environment Debug' },
+                { path: '/api/testConnection', name: 'Test Connection' }
+            ];
+            
+            if (config.databaseId) {
+                endpoints.push(
+                    { path: `/api/testConnection?databaseId=${config.databaseId}`, name: 'Test Database Connection' },
+                    { path: `/api/queryDatabase?databaseId=${config.databaseId}`, name: 'Query Database' }
+                );
+            }
+            
+            for (const endpoint of endpoints) {
+                try {
+                    log += `Testing ${endpoint.name}...\n`;
+                    const response = await fetch(`${config.backendUrl}${endpoint.path}`);
+                    
+                    if (response.ok) {
+                        log += `✅ ${endpoint.name} - OK\n`;
+                    } else {
+                        log += `❌ ${endpoint.name} - ${response.status} ${response.statusText}\n`;
+                    }
+                } catch (error) {
+                    log += `❌ ${endpoint.name} - ${error.message}\n`;
+                }
+                log += '\n';
+            }
+            
+            updateResults(log);
+        }
+
+        function clearResults() {
+            document.getElementById('results').classList.add('hidden');
+            document.getElementById('testSummary').style.display = 'none';
+            document.getElementById('alertContainer').innerHTML = '';
+            testResults = {};
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTestSummary();
+        });
+    </script>
+</body>
+</html>

@@ -2,6 +2,28 @@
 
 A web-based tool for generating secure API client code instantly from any API endpoint. Features both a modern web interface and command-line examples for Python and Node.js.
 
+## 🆕 NEW: Notion API Debugging Tools
+
+**Having trouble with Notion API connections?** This repository now includes comprehensive debugging tools specifically designed to resolve Notion API key rejection and connection issues after implementing serverless backends.
+
+### 🔧 Quick Debugging
+```bash
+# Install dependencies
+npm install
+
+# Run Notion API diagnostic
+npm run debug:notion [database-id]
+
+# Start Notion API backend proxy
+npm run start:notion-backend
+
+# Open notion_api_debugger_web.html for web interface
+```
+
+**[📖 Complete Notion API Debugging Guide](NOTION_API_GUIDE.md)**
+
+---
+
 ## 🌐 Web Interface
 
 Visit the **[Live Web Generator](https://jcotebcs.github.io/Rapid_API-Generator)** to instantly generate API client code:
@@ -13,6 +35,7 @@ Visit the **[Live Web Generator](https://jcotebcs.github.io/Rapid_API-Generator)
 - **🛡️ Security Best Practices**: Built-in environment variable management
 - **✨ Modern UI**: Clean, responsive design with tabbed code output
 - **🚀 Real-time Generation**: Instant code generation with live preview
+- **🔍 NEW: Notion API Debugging**: Comprehensive tools for Notion API troubleshooting
 
 ### How to Use
 1. Enter your API endpoint URL
@@ -29,7 +52,8 @@ Visit the **[Live Web Generator](https://jcotebcs.github.io/Rapid_API-Generator)
 
 - Python 3.7+ (for Python example)
 - Node.js 14+ (for Node.js example)
-- A RapidAPI account and API key
+- A RapidAPI account and API key (for RapidAPI examples)
+- A Notion integration (for Notion API debugging)
 
 ### Setup
 
@@ -42,11 +66,14 @@ Visit the **[Live Web Generator](https://jcotebcs.github.io/Rapid_API-Generator)
 2. **Create your environment file**
    ```bash
    cp .env.example .env
+   # Or for Notion API:
+   cp .env.example.notion .env
    ```
 
-3. **Add your RapidAPI key to the `.env` file**
+3. **Add your API keys to the `.env` file**
    ```env
    RAPIDAPI_KEY=your_actual_rapidapi_key_here
+   NOTION_API_KEY=secret_your_notion_key_here
    ```
 
    ⚠️ **Important**: Never commit your `.env` file to version control! It's already added to `.gitignore` for your security.
@@ -67,41 +94,68 @@ The Python example uses:
 - `requests` library for HTTP requests
 - `python-dotenv` for loading environment variables from `.env` file
 
-## 🟢 Node.js Example
+## 🟢 Node.js Examples
 
 ### Install Dependencies
 ```bash
 npm install
 ```
 
-### Run the Node.js Example
+### Run Examples
 ```bash
+# Run RapidAPI example
 npm start
-# or
-node rapidapi_example.js
+
+# Run Notion API debugger
+npm run debug:notion
+
+# Start Notion API backend proxy
+npm run start:notion-backend
 ```
 
-The Node.js example uses:
+The Node.js examples use:
 - `axios` library for HTTP requests
 - `dotenv` for loading environment variables from `.env` file
+- `express` and `cors` for the backend proxy server
 
 ## 📁 Project Structure
 
 ```
 Rapid_API-Generator/
-├── .env.example          # Template for environment variables
-├── .gitignore           # Git ignore rules (includes .env)
-├── requirements.txt     # Python dependencies
-├── package.json         # Node.js dependencies
-├── rapidapi_example.py  # Python example script
-├── rapidapi_example.js  # Node.js example script
-├── Dockerfile.node      # Docker configuration for Node.js
-├── Dockerfile.python    # Docker configuration for Python
+├── .env.example              # Template for environment variables
+├── .env.example.notion       # Notion-specific environment template
+├── .gitignore               # Git ignore rules (includes .env)
+├── requirements.txt         # Python dependencies
+├── package.json             # Node.js dependencies
+├── rapidapi_example.py      # Python example script
+├── rapidapi_example.js      # Node.js example script
+├── notion_api_debugger.js   # Notion API debugging CLI tool
+├── notion_api_backend.js    # Notion API backend proxy server
+├── notion_api_debugger_web.html # Web-based Notion API debugger
+├── NOTION_API_GUIDE.md      # Comprehensive Notion API debugging guide
+├── Dockerfile.node          # Docker configuration for Node.js
+├── Dockerfile.python        # Docker configuration for Python
 ├── .github/
 │   └── workflows/
-│       └── deploy.yml   # CI/CD pipeline configuration
-└── README.md           # This file
+│       └── deploy.yml       # CI/CD pipeline configuration
+└── README.md               # This file
 ```
+
+## 🔍 Notion API Debugging Features
+
+### Comprehensive Diagnostic Tools
+- **Environment Variable Validation**: Verify API keys are properly set
+- **Database Access Testing**: Check permissions and database connectivity
+- **Backend Proxy Server**: Solve CORS issues with secure proxy
+- **Web Interface**: User-friendly debugging with guided troubleshooting
+- **CLI Tools**: Command-line diagnostic capabilities
+
+### Common Issues Addressed
+- ✅ API key rejection after backend implementation
+- ✅ CORS issues with client-side calls
+- ✅ Database permission and sharing problems
+- ✅ Environment variable configuration issues
+- ✅ Integration authentication failures
 
 ## 🚀 Deployment
 
@@ -125,9 +179,9 @@ npm run docker:build
 #### Running with Docker
 
 ```bash
-# Ensure you have a .env file with your RAPIDAPI_KEY
+# Ensure you have a .env file with your API keys
 cp .env.example .env
-# Edit .env with your actual API key
+# Edit .env with your actual API keys
 
 # Run Node.js example
 npm run docker:run:node
@@ -135,6 +189,16 @@ npm run docker:run:node
 # Run Python example
 npm run docker:run:python
 ```
+
+### Serverless Deployment (Notion API Backend)
+
+The Notion API backend is designed for serverless deployment on platforms like:
+
+- **Vercel**: Deploy with `vercel --env-file .env`
+- **Railway**: Push to connected repository
+- **Render**: Deploy as web service
+- **Netlify Functions**: Use as serverless function
+- **AWS Lambda**: Deploy with serverless framework
 
 ### Manual Docker Commands
 
@@ -163,6 +227,7 @@ The pipeline runs automatically and ensures code quality and deployment readines
 For production deployments, ensure you set the following environment variables:
 
 - `RAPIDAPI_KEY`: Your production RapidAPI key
+- `NOTION_API_KEY`: Your production Notion integration key
 - `NODE_ENV`: Set to `production` for optimized performance
 - `RAPIDAPI_HOST`: Override if using a different API host
 
@@ -175,11 +240,16 @@ For production deployments, ensure you set the following environment variables:
 
 ## 🔧 Customization
 
-Both example scripts are templates that demonstrate secure API key management. To use them with actual RapidAPI endpoints:
+Both example scripts are templates that demonstrate secure API key management. To use them with actual API endpoints:
 
-1. Replace the `url` variable with your specific RapidAPI endpoint
-2. Update the `X-RapidAPI-Host` header with the correct host for your API
+1. Replace the `url` variable with your specific API endpoint
+2. Update the API host headers with the correct host for your API
 3. Modify the request parameters as needed for your specific API
+
+For Notion API integration:
+1. Create an integration at [notion.so/my-integrations](https://www.notion.so/my-integrations)
+2. Share your database with the integration
+3. Use the debugging tools to verify connection
 
 ## 🔒 Security Best Practices
 
@@ -188,10 +258,13 @@ Both example scripts are templates that demonstrate secure API key management. T
 - ✅ Use `.env.example` as a template for other developers
 - ✅ Never hardcode API keys in your source code
 - ✅ Use different API keys for development, staging, and production
+- ✅ Use backend proxy servers to avoid exposing keys in frontend
+- ✅ Implement proper error handling and logging
 
 ## 📚 Learn More
 
 - [RapidAPI Documentation](https://docs.rapidapi.com/)
+- [Notion API Documentation](https://developers.notion.com/)
 - [Python Requests Documentation](https://requests.readthedocs.io/)
 - [Axios Documentation](https://axios-http.com/)
 - [Python-dotenv Documentation](https://pypi.org/project/python-dotenv/)
@@ -199,4 +272,10 @@ Both example scripts are templates that demonstrate secure API key management. T
 
 ## 🤝 Contributing
 
-Feel free to submit issues and pull requests to improve these examples!
+Feel free to submit issues and pull requests to improve these examples! Contributions are especially welcome for:
+
+- Additional API integrations
+- Enhanced debugging tools
+- Improved error handling
+- Documentation improvements
+- Security enhancements
