@@ -295,8 +295,8 @@
         }
 
         function generatePythonCode(formData) {
-            const apiName = formData.apiName || generateApiName(formData.apiUrl);
-            const host = formData.rapidApiHost || extractHostFromUrl(formData.apiUrl);
+            const apiName = (formData.apiName && formData.apiName.trim()) ? formData.apiName.trim() : generateApiName(formData.apiUrl);
+            const host = (formData.rapidApiHost && formData.rapidApiHost.trim()) ? formData.rapidApiHost.trim() : extractHostFromUrl(formData.apiUrl);
             const additionalHeaders = formData.headers ? JSON.parse(formData.headers) : {};
             
             let headersCode = '"X-RapidAPI-Key": api_key,\n        "X-RapidAPI-Host": "' + host + '"';
@@ -360,8 +360,8 @@ if __name__ == "__main__":
         }
 
         function generateNodeJSCode(formData) {
-            const apiName = formData.apiName || generateApiName(formData.apiUrl);
-            const host = formData.rapidApiHost || extractHostFromUrl(formData.apiUrl);
+            const apiName = (formData.apiName && formData.apiName.trim()) ? formData.apiName.trim() : generateApiName(formData.apiUrl);
+            const host = (formData.rapidApiHost && formData.rapidApiHost.trim()) ? formData.rapidApiHost.trim() : extractHostFromUrl(formData.apiUrl);
             const additionalHeaders = formData.headers ? JSON.parse(formData.headers) : {};
             
             let headersCode = "'X-RapidAPI-Key': apiKey,\n        'X-RapidAPI-Host': '" + host + "'";
