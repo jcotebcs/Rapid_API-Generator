@@ -3,240 +3,590 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rapid API Generator</title>
+    <meta name="description" content="Generate secure API client code instantly from any API endpoint. Blue Collar Services professional API generator.">
+    <meta name="keywords" content="API generator, RapidAPI, Blue Collar Services, API client, code generator">
+    <meta name="author" content="Blue Collar Services">
+    <title>Rapid API Generator - Blue Collar Services</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        /* Blue Collar Services Color Scheme: Blue, Green, Black, White */
+        :root {
+            --primary-blue: #1e40af;
+            --secondary-blue: #3b82f6;
+            --light-blue: #dbeafe;
+            --success-green: #10b981;
+            --dark-green: #059669;
+            --light-green: #d1fae5;
+            --text-black: #1f2937;
+            --light-black: #374151;
+            --pure-white: #ffffff;
+            --off-white: #f9fafb;
+            --border-gray: #e5e7eb;
+        }
+
+        * {
             margin: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background-color: rgba(255, 255, 255, 0.95);
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
-            backdrop-filter: blur(10px);
-        }
-        h1 {
-            color: #0366d6;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        .subtitle {
-            text-align: center;
-            color: #666;
-            margin-bottom: 30px;
-        }
-        .form-section {
-            margin-bottom: 30px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #444;
-        }
-        input, select, textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 6px;
-            font-size: 14px;
+            padding: 0;
             box-sizing: border-box;
         }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 50%, var(--success-green) 100%);
+            color: var(--text-black);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: var(--pure-white);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-blue), var(--success-green));
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--success-green));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--pure-white);
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        h1 {
+            color: var(--primary-blue);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.025em;
+        }
+
+        .subtitle {
+            color: var(--light-black);
+            font-size: 1.125rem;
+            font-weight: 400;
+            margin-bottom: 8px;
+        }
+
+        .brand {
+            color: var(--success-green);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-section {
+            margin-bottom: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-black);
+            font-size: 0.875rem;
+        }
+
+        .required {
+            color: var(--primary-blue);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--border-gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            background-color: var(--pure-white);
+        }
+
         input:focus, select:focus, textarea:focus {
             outline: none;
-            border-color: #0366d6;
-            box-shadow: 0 0 0 3px rgba(3, 102, 214, 0.1);
+            border-color: var(--secondary-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
         }
+
         .form-row {
-            display: flex;
-            gap: 15px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
         }
-        .form-row .form-group {
-            flex: 1;
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
         }
-        button {
-            background: linear-gradient(135deg, #0366d6, #0256cc);
-            color: white;
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary-blue), var(--secondary-blue));
+            color: var(--pure-white);
             border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
+            padding: 16px 32px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 1rem;
+            font-weight: 600;
             transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            font-family: inherit;
         }
-        button:hover {
+
+        .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(3, 102, 214, 0.3);
+            box-shadow: 0 10px 25px rgba(30, 64, 175, 0.3);
         }
-        button:disabled {
-            background: #ccc;
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            background: var(--border-gray);
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-green), var(--dark-green));
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--off-white);
+            color: var(--text-black);
+            border: 2px solid var(--border-gray);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-gray);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
         .output-section {
-            margin-top: 30px;
+            margin-top: 40px;
             display: none;
         }
+
         .tabs {
             display: flex;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #eee;
+            margin-bottom: 24px;
+            border-bottom: 2px solid var(--border-gray);
+            gap: 4px;
         }
+
         .tab {
             padding: 12px 24px;
-            background: #f8f9fa;
+            background: transparent;
             border: none;
             border-bottom: 3px solid transparent;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            color: var(--light-black);
+            font-family: inherit;
         }
+
         .tab.active {
-            background: white;
-            border-bottom-color: #0366d6;
-            color: #0366d6;
+            background: var(--light-blue);
+            border-bottom-color: var(--primary-blue);
+            color: var(--primary-blue);
+            border-radius: 6px 6px 0 0;
         }
+
+        .tab:hover:not(.active) {
+            background: var(--off-white);
+            color: var(--text-black);
+        }
+
         .tab-content {
             display: none;
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 6px;
+            background: var(--off-white);
+            padding: 24px;
+            border-radius: 8px;
             position: relative;
+            border: 1px solid var(--border-gray);
         }
+
         .tab-content.active {
             display: block;
         }
+
         pre {
-            background: #2d3748;
+            background: var(--text-black);
             color: #e2e8f0;
-            padding: 20px;
-            border-radius: 6px;
+            padding: 24px;
+            border-radius: 8px;
             overflow-x: auto;
             white-space: pre-wrap;
             margin: 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
         }
+
         .copy-btn {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #4a5568;
-            color: white;
+            top: 16px;
+            right: 16px;
+            background: var(--success-green);
+            color: var(--pure-white);
             border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
+            padding: 8px 16px;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
         }
+
         .copy-btn:hover {
-            background: #2d3748;
+            background: var(--dark-green);
+            transform: translateY(-1px);
         }
+
         .download-section {
-            margin-top: 20px;
+            margin-top: 24px;
+            padding: 24px;
+            background: var(--light-green);
+            border-radius: 8px;
             text-align: center;
         }
-        .error {
-            background: #fed7d7;
-            color: #c53030;
-            padding: 12px;
-            border-radius: 6px;
-            margin-top: 20px;
-            display: none;
+
+        .download-section h3 {
+            color: var(--text-black);
+            margin-bottom: 16px;
+            font-size: 1.125rem;
         }
-        .success {
-            background: #c6f6d5;
-            color: #2f855a;
-            padding: 12px;
-            border-radius: 6px;
+
+        .download-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .alert {
+            padding: 16px 20px;
+            border-radius: 8px;
             margin-top: 20px;
             display: none;
+            font-weight: 500;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        .alert-success {
+            background: var(--light-green);
+            color: var(--dark-green);
+            border: 1px solid #a7f3d0;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid var(--border-gray);
+            border-top: 3px solid var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 32px 0;
+        }
+
+        .feature {
+            text-align: center;
+            padding: 20px;
+            background: var(--off-white);
+            border-radius: 8px;
+            border: 1px solid var(--border-gray);
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--success-green));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+            color: var(--pure-white);
+            font-weight: 600;
+        }
+
+        .feature h4 {
+            color: var(--text-black);
+            margin-bottom: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .feature p {
+            color: var(--light-black);
+            font-size: 0.75rem;
+        }
+
+        /* Performance optimizations */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Accessibility improvements */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+            .container {
+                box-shadow: none;
+                border: 1px solid #ccc;
+            }
+            .btn {
+                display: none;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🚀 Rapid API Generator</h1>
-        <p class="subtitle">Generate secure API client code instantly from any API endpoint</p>
+        <div class="header">
+            <div class="logo">
+                <div class="logo-icon">🚀</div>
+                <div>
+                    <h1>Rapid API Generator</h1>
+                    <p class="subtitle">Generate secure API client code instantly from any API endpoint</p>
+                    <div class="brand">Blue Collar Services</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature">
+                <div class="feature-icon">🔒</div>
+                <h4>Secure by Default</h4>
+                <p>Environment-based API key management</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <h4>Production Ready</h4>
+                <p>Optimized for performance and reliability</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🌐</div>
+                <h4>Multi-Language</h4>
+                <p>Python and Node.js code generation</p>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">📋</div>
+                <h4>Easy Export</h4>
+                <p>Copy to clipboard or download files</p>
+            </div>
+        </div>
         
         <div class="form-section">
-            <form id="apiForm">
+            <form id="apiForm" aria-label="API Code Generator Form">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="apiUrl">API Endpoint URL *</label>
-                        <input type="url" id="apiUrl" name="apiUrl" placeholder="https://api.example.com/v1/endpoint" required>
+                        <label for="apiUrl">
+                            API Endpoint URL <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="url" 
+                            id="apiUrl" 
+                            name="apiUrl" 
+                            placeholder="https://api.example.com/v1/endpoint" 
+                            required
+                            aria-describedby="apiUrl-help"
+                        >
+                        <div id="apiUrl-help" class="sr-only">Enter the full URL of the API endpoint you want to generate code for</div>
                     </div>
                     <div class="form-group">
                         <label for="httpMethod">HTTP Method</label>
-                        <select id="httpMethod" name="httpMethod">
+                        <select id="httpMethod" name="httpMethod" aria-describedby="httpMethod-help">
                             <option value="GET">GET</option>
                             <option value="POST">POST</option>
                             <option value="PUT">PUT</option>
                             <option value="DELETE">DELETE</option>
                             <option value="PATCH">PATCH</option>
                         </select>
+                        <div id="httpMethod-help" class="sr-only">Select the HTTP method for your API request</div>
                     </div>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group">
                         <label for="apiName">API Name</label>
-                        <input type="text" id="apiName" name="apiName" placeholder="MyAPI">
+                        <input 
+                            type="text" 
+                            id="apiName" 
+                            name="apiName" 
+                            placeholder="MyAPI"
+                            aria-describedby="apiName-help"
+                        >
+                        <div id="apiName-help" class="sr-only">Provide a name for your API (auto-generated from URL if left empty)</div>
                     </div>
                     <div class="form-group">
                         <label for="rapidApiHost">RapidAPI Host (optional)</label>
-                        <input type="text" id="rapidApiHost" name="rapidApiHost" placeholder="api.rapidapi.com">
+                        <input 
+                            type="text" 
+                            id="rapidApiHost" 
+                            name="rapidApiHost" 
+                            placeholder="api.rapidapi.com"
+                            aria-describedby="rapidApiHost-help"
+                        >
+                        <div id="rapidApiHost-help" class="sr-only">Specify the RapidAPI host if different from the API URL domain</div>
                     </div>
                 </div>
                 
                 <div class="form-group">
                     <label for="headers">Additional Headers (JSON format, optional)</label>
-                    <textarea id="headers" name="headers" rows="3" placeholder='{"Content-Type": "application/json", "Authorization": "Bearer token"}'></textarea>
+                    <textarea 
+                        id="headers" 
+                        name="headers" 
+                        rows="3" 
+                        placeholder='{"Content-Type": "application/json", "Authorization": "Bearer token"}'
+                        aria-describedby="headers-help"
+                    ></textarea>
+                    <div id="headers-help" class="sr-only">Enter additional HTTP headers in JSON format if required by your API</div>
                 </div>
                 
                 <div class="form-group" style="text-align: center;">
-                    <button type="submit">Generate API Code</button>
+                    <button type="submit" class="btn" id="generateBtn">
+                        <span>Generate API Code</span>
+                    </button>
                 </div>
             </form>
         </div>
 
-        <div class="error" id="errorMessage"></div>
-        <div class="success" id="successMessage"></div>
+        <div class="loading" id="loadingSection">
+            <div class="spinner"></div>
+            <p>Generating your API client code...</p>
+        </div>
+
+        <div class="alert alert-error" id="errorMessage" role="alert" aria-live="polite"></div>
+        <div class="alert alert-success" id="successMessage" role="alert" aria-live="polite"></div>
 
         <div class="output-section" id="outputSection">
-            <div class="tabs">
-                <button class="tab active" onclick="showTab('python')">Python</button>
-                <button class="tab" onclick="showTab('nodejs')">Node.js</button>
-                <button class="tab" onclick="showTab('env')">Environment</button>
+            <div class="tabs" role="tablist">
+                <button class="tab active" role="tab" aria-selected="true" aria-controls="python-content" onclick="showTab('python')">Python</button>
+                <button class="tab" role="tab" aria-selected="false" aria-controls="nodejs-content" onclick="showTab('nodejs')">Node.js</button>
+                <button class="tab" role="tab" aria-selected="false" aria-controls="env-content" onclick="showTab('env')">Environment</button>
             </div>
 
-            <div class="tab-content active" id="python-content">
-                <button class="copy-btn" onclick="copyToClipboard('python-code')">Copy</button>
-                <pre id="python-code"></pre>
+            <div class="tab-content active" id="python-content" role="tabpanel" aria-labelledby="python-tab">
+                <button class="copy-btn" onclick="copyToClipboard('python-code')" aria-label="Copy Python code to clipboard">Copy</button>
+                <pre id="python-code" aria-label="Generated Python code"></pre>
             </div>
 
-            <div class="tab-content" id="nodejs-content">
-                <button class="copy-btn" onclick="copyToClipboard('nodejs-code')">Copy</button>
-                <pre id="nodejs-code"></pre>
+            <div class="tab-content" id="nodejs-content" role="tabpanel" aria-labelledby="nodejs-tab">
+                <button class="copy-btn" onclick="copyToClipboard('nodejs-code')" aria-label="Copy Node.js code to clipboard">Copy</button>
+                <pre id="nodejs-code" aria-label="Generated Node.js code"></pre>
             </div>
 
-            <div class="tab-content" id="env-content">
-                <button class="copy-btn" onclick="copyToClipboard('env-code')">Copy</button>
-                <pre id="env-code"></pre>
+            <div class="tab-content" id="env-content" role="tabpanel" aria-labelledby="env-tab">
+                <button class="copy-btn" onclick="copyToClipboard('env-code')" aria-label="Copy environment file to clipboard">Copy</button>
+                <pre id="env-code" aria-label="Generated environment configuration"></pre>
             </div>
 
             <div class="download-section">
-                <button onclick="downloadCode('python')">Download Python Code</button>
-                <button onclick="downloadCode('nodejs')">Download Node.js Code</button>
-                <button onclick="downloadCode('env')">Download .env Template</button>
+                <h3>Download Generated Files</h3>
+                <div class="download-buttons">
+                    <button class="btn btn-success" onclick="downloadCode('python')">
+                        📄 Download Python
+                    </button>
+                    <button class="btn btn-success" onclick="downloadCode('nodejs')">
+                        📄 Download Node.js
+                    </button>
+                    <button class="btn btn-success" onclick="downloadCode('env')">
+                        📄 Download .env
+                    </button>
+                    <button class="btn btn-secondary" onclick="downloadAllAsZip()">
+                        📦 Download ZIP Package
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -248,13 +598,32 @@
             env: ''
         };
 
+        // Performance: Debounce function for input events
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
         function showTab(tabName) {
             // Hide all tabs and content
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+                tab.setAttribute('aria-selected', 'false');
+            });
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
             
             // Show selected tab and content
             event.target.classList.add('active');
+            event.target.setAttribute('aria-selected', 'true');
             document.getElementById(tabName + '-content').classList.add('active');
         }
 
@@ -263,6 +632,7 @@
             errorDiv.textContent = message;
             errorDiv.style.display = 'block';
             document.getElementById('successMessage').style.display = 'none';
+            errorDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
         function showSuccess(message) {
@@ -275,6 +645,11 @@
         function hideMessages() {
             document.getElementById('errorMessage').style.display = 'none';
             document.getElementById('successMessage').style.display = 'none';
+        }
+
+        function showLoading(show = true) {
+            document.getElementById('loadingSection').style.display = show ? 'block' : 'none';
+            document.getElementById('generateBtn').disabled = show;
         }
 
         function extractHostFromUrl(url) {
@@ -309,51 +684,101 @@
             
             return `#!/usr/bin/env python3
 """
-${apiName} API Client
-Generated by Rapid API Generator
+${apiName} API Client - Blue Collar Services
+Generated by Rapid API Generator v6
 
 This script demonstrates secure API key management for ${apiName} API access.
 Make sure to create a .env file with your API key before running this script.
+
+Requirements:
+    pip install requests python-dotenv
 """
 
 import os
+import sys
 import requests
 from dotenv import load_dotenv
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+class ${apiName}Client:
+    """Professional API client for ${apiName}"""
+    
+    def __init__(self):
+        # Load environment variables from .env file
+        load_dotenv()
+        
+        # Get the API key from environment variables
+        self.api_key = os.getenv('RAPIDAPI_KEY')
+        
+        if not self.api_key or self.api_key == 'your_super_secret_api_key':
+            logger.error("Invalid API key. Please set RAPIDAPI_KEY in your .env file")
+            raise ValueError("API key not configured properly")
+        
+        # API endpoint configuration
+        self.base_url = "${formData.apiUrl}"
+        self.headers = {
+            ${headersCode}
+        }
+        
+        # Set up session for connection pooling
+        self.session = requests.Session()
+        self.session.headers.update(self.headers)
+    
+    def make_request(self, method="${formData.httpMethod.toLowerCase()}", **kwargs):
+        """Make API request with error handling and retry logic"""
+        try:
+            logger.info(f"Making {method.upper()} request to {self.base_url}")
+            
+            response = self.session.request(
+                method=method,
+                url=self.base_url,
+                timeout=30,
+                **kwargs
+            )
+            
+            # Raise an exception for bad status codes
+            response.raise_for_status()
+            
+            logger.info(f"Request successful - Status: {response.status_code}")
+            return response.json()
+            
+        except requests.exceptions.RequestException as e:
+            logger.error(f"API request failed: {e}")
+            raise
+        except ValueError as e:
+            logger.error(f"Invalid JSON response: {e}")
+            raise
+        except Exception as e:
+            logger.error(f"Unexpected error: {e}")
+            raise
+    
+    def close(self):
+        """Close the session"""
+        self.session.close()
 
 def main():
-    # Load environment variables from .env file
-    load_dotenv()
-    
-    # Get the API key from environment variables
-    api_key = os.getenv('RAPIDAPI_KEY')
-    
-    if not api_key or api_key == 'your_super_secret_api_key':
-        print("Error: Please set a valid RAPIDAPI_KEY in your .env file")
-        print("Copy .env.example to .env and replace with your actual API key")
-        return
-    
-    # API endpoint configuration
-    url = "${formData.apiUrl}"
-    
-    headers = {
-        ${headersCode}
-    }
-    
+    """Main function demonstrating API usage"""
+    client = None
     try:
-        print("Making API request...")
-        response = requests.${formData.httpMethod.toLowerCase()}(url, headers=headers)
+        # Initialize the API client
+        client = ${apiName}Client()
         
-        if response.status_code == 200:
-            print("Success! API Response:")
-            print(response.json())
-        else:
-            print(f"API request failed with status code: {response.status_code}")
-            print(f"Response: {response.text}")
-            
-    except requests.exceptions.RequestException as e:
-        print(f"Error making API request: {e}")
+        # Make the API request
+        result = client.make_request()
+        
+        print("✅ API Response:")
+        print(result)
+        
     except Exception as e:
-        print(f"Unexpected error: {e}")
+        print(f"❌ Error: {e}")
+        sys.exit(1)
+    finally:
+        if client:
+            client.close()
 
 if __name__ == "__main__":
     main()`;
@@ -374,80 +799,151 @@ if __name__ == "__main__":
             
             return `#!/usr/bin/env node
 /**
- * ${apiName} API Client
- * Generated by Rapid API Generator
+ * ${apiName} API Client - Blue Collar Services
+ * Generated by Rapid API Generator v6
  * 
  * This script demonstrates secure API key management for ${apiName} API access.
  * Make sure to create a .env file with your API key before running this script.
+ * 
+ * Requirements:
+ *   npm install axios dotenv
  */
 
 const axios = require('axios');
 require('dotenv').config();
 
-async function main() {
-    // Get the API key from environment variables
-    const apiKey = process.env.RAPIDAPI_KEY;
-    
-    if (!apiKey || apiKey === 'your_super_secret_api_key') {
-        console.error('Error: Please set a valid RAPIDAPI_KEY in your .env file');
-        console.error('Copy .env.example to .env and replace with your actual API key');
-        return;
+class ${apiName}Client {
+    /**
+     * Professional API client for ${apiName}
+     */
+    constructor() {
+        // Get the API key from environment variables
+        this.apiKey = process.env.RAPIDAPI_KEY;
+        
+        if (!this.apiKey || this.apiKey === 'your_super_secret_api_key') {
+            throw new Error('Invalid API key. Please set RAPIDAPI_KEY in your .env file');
+        }
+        
+        // API endpoint configuration
+        this.baseURL = '${formData.apiUrl}';
+        
+        // Configure axios instance with defaults
+        this.client = axios.create({
+            baseURL: this.baseURL,
+            timeout: 30000,
+            headers: {
+                ${headersCode}
+            }
+        });
+        
+        // Add request/response interceptors for logging
+        this.client.interceptors.request.use(
+            (config) => {
+                console.log(\`📤 Making \${config.method?.toUpperCase()} request to \${config.url}\`);
+                return config;
+            },
+            (error) => {
+                console.error('❌ Request error:', error.message);
+                return Promise.reject(error);
+            }
+        );
+        
+        this.client.interceptors.response.use(
+            (response) => {
+                console.log(\`✅ Request successful - Status: \${response.status}\`);
+                return response;
+            },
+            (error) => {
+                if (error.response) {
+                    console.error(\`❌ API error (\${error.response.status}): \${error.response.data}\`);
+                } else if (error.request) {
+                    console.error('❌ No response received:', error.message);
+                } else {
+                    console.error('❌ Request setup error:', error.message);
+                }
+                return Promise.reject(error);
+            }
+        );
     }
     
-    // API endpoint configuration
-    const url = '${formData.apiUrl}';
-    
-    const headers = {
-        ${headersCode}
-    };
-    
-    try {
-        console.log('Making API request...');
-        const response = await axios.${formData.httpMethod.toLowerCase()}(url, { headers });
-        
-        console.log('Success! API Response:');
-        console.log(response.data);
-        
-    } catch (error) {
-        if (error.response) {
-            console.error(\`API request failed with status code: \${error.response.status}\`);
-            console.error(\`Response: \${error.response.data}\`);
-        } else if (error.request) {
-            console.error('No response received from API');
-            console.error(error.message);
-        } else {
-            console.error('Error setting up API request:', error.message);
+    /**
+     * Make API request with error handling
+     */
+    async makeRequest(options = {}) {
+        try {
+            const response = await this.client.${formData.httpMethod.toLowerCase()}('', options);
+            return response.data;
+        } catch (error) {
+            throw new Error(\`API request failed: \${error.message}\`);
         }
     }
 }
+
+async function main() {
+    let client;
+    try {
+        // Initialize the API client
+        client = new ${apiName}Client();
+        
+        // Make the API request
+        const result = await client.makeRequest();
+        
+        console.log('\\n📋 API Response:');
+        console.log(JSON.stringify(result, null, 2));
+        
+    } catch (error) {
+        console.error(\`\\n❌ Error: \${error.message}\`);
+        process.exit(1);
+    }
+}
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+    process.exit(1);
+});
 
 // Run the main function
 main().catch(console.error);`;
         }
 
         function generateEnvCode() {
-            return `# RapidAPI Configuration
+            return `# RapidAPI Configuration - Blue Collar Services
 # Copy this file to .env and replace with your actual API key
 # Get your API key from: https://rapidapi.com/
 
 RAPIDAPI_KEY=your_super_secret_api_key
 
 # Additional environment variables can be added here
-# NODE_ENV=development
-# API_TIMEOUT=5000`;
+NODE_ENV=production
+API_TIMEOUT=30000
+LOG_LEVEL=info
+
+# Security settings
+RATE_LIMIT=100
+ENABLE_CORS=true`;
         }
 
-        function copyToClipboard(elementId) {
+        async function copyToClipboard(elementId) {
             const element = document.getElementById(elementId);
             const text = element.textContent;
             
-            navigator.clipboard.writeText(text).then(() => {
-                showSuccess('Code copied to clipboard!');
+            try {
+                await navigator.clipboard.writeText(text);
+                showSuccess('Code copied to clipboard! ✅');
                 setTimeout(hideMessages, 3000);
-            }).catch(() => {
-                showError('Failed to copy code to clipboard');
+            } catch (error) {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                showSuccess('Code copied to clipboard! ✅');
                 setTimeout(hideMessages, 3000);
-            });
+            }
         }
 
         function downloadCode(type) {
@@ -461,46 +957,93 @@ RAPIDAPI_KEY=your_super_secret_api_key
             const a = document.createElement('a');
             a.href = url;
             a.download = filename;
+            a.style.display = 'none';
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
             window.URL.revokeObjectURL(url);
             
-            showSuccess(filename + ' downloaded successfully!');
+            showSuccess(`${filename} downloaded successfully! 📄`);
             setTimeout(hideMessages, 3000);
         }
 
-        document.getElementById('apiForm').addEventListener('submit', function(e) {
+        async function downloadAllAsZip() {
+            try {
+                // Dynamically import JSZip
+                const { default: JSZip } = await import('https://cdn.skypack.dev/jszip@3.10.1');
+                
+                const zip = new JSZip();
+                
+                // Add files to zip
+                zip.file('rapidapi_client.py', generatedCode.python);
+                zip.file('rapidapi_client.js', generatedCode.nodejs);
+                zip.file('.env.example', generatedCode.env);
+                zip.file('README.md', `# Generated API Client - Blue Collar Services
+
+This package contains generated API client code for your API endpoint.
+
+## Files:
+- \`rapidapi_client.py\` - Python client
+- \`rapidapi_client.js\` - Node.js client  
+- \`.env.example\` - Environment configuration template
+
+## Setup:
+1. Copy \`.env.example\` to \`.env\`
+2. Add your actual RapidAPI key to the \`.env\` file
+3. Install dependencies and run the client
+
+Generated by Rapid API Generator v6 - Blue Collar Services
+`);
+                
+                // Generate zip file
+                const zipBlob = await zip.generateAsync({ type: 'blob' });
+                
+                // Download zip file
+                const url = window.URL.createObjectURL(zipBlob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'rapidapi-client-package.zip';
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                
+                showSuccess('ZIP package downloaded successfully! 📦');
+                setTimeout(hideMessages, 3000);
+                
+            } catch (error) {
+                showError('Failed to create ZIP package. Try downloading files individually.');
+                console.error('ZIP download error:', error);
+            }
+        }
+
+        // Form submission handler
+        document.getElementById('apiForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             hideMessages();
+            showLoading(true);
+            
+            // Simulate processing time for better UX
+            await new Promise(resolve => setTimeout(resolve, 500));
             
             const formData = {
-                apiUrl: document.getElementById('apiUrl').value,
+                apiUrl: document.getElementById('apiUrl').value.trim(),
                 httpMethod: document.getElementById('httpMethod').value,
-                apiName: document.getElementById('apiName').value,
-                rapidApiHost: document.getElementById('rapidApiHost').value,
+                apiName: document.getElementById('apiName').value.trim(),
+                rapidApiHost: document.getElementById('rapidApiHost').value.trim(),
                 headers: document.getElementById('headers').value.trim()
             };
             
-            // Validate URL
             try {
+                // Validate URL
                 new URL(formData.apiUrl);
-            } catch {
-                showError('Please enter a valid API URL');
-                return;
-            }
-            
-            // Validate JSON headers if provided
-            if (formData.headers) {
-                try {
+                
+                // Validate JSON headers if provided
+                if (formData.headers) {
                     JSON.parse(formData.headers);
-                } catch {
-                    showError('Headers must be valid JSON format');
-                    return;
                 }
-            }
-            
-            try {
+                
                 // Generate code
                 generatedCode.python = generatePythonCode(formData);
                 generatedCode.nodejs = generateNodeJSCode(formData);
@@ -514,24 +1057,63 @@ RAPIDAPI_KEY=your_super_secret_api_key
                 // Show output section
                 document.getElementById('outputSection').style.display = 'block';
                 
-                showSuccess('API client code generated successfully!');
+                showSuccess('API client code generated successfully! 🚀');
                 setTimeout(hideMessages, 3000);
                 
-                // Scroll to output
-                document.getElementById('outputSection').scrollIntoView({ behavior: 'smooth' });
+                // Smooth scroll to output
+                setTimeout(() => {
+                    document.getElementById('outputSection').scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }, 100);
                 
             } catch (error) {
-                showError('Error generating code: ' + error.message);
+                let errorMessage = 'Error generating code: ';
+                if (error.message.includes('Invalid URL')) {
+                    errorMessage += 'Please enter a valid API URL';
+                } else if (error.message.includes('JSON')) {
+                    errorMessage += 'Headers must be valid JSON format';
+                } else {
+                    errorMessage += error.message;
+                }
+                showError(errorMessage);
+            } finally {
+                showLoading(false);
             }
         });
 
-        // Auto-fill API name when URL changes
-        document.getElementById('apiUrl').addEventListener('input', function() {
+        // Auto-fill API name when URL changes (debounced)
+        const debouncedApiNameUpdate = debounce(function(url) {
             const apiNameField = document.getElementById('apiName');
             if (!apiNameField.value) {
-                apiNameField.value = generateApiName(this.value);
+                apiNameField.value = generateApiName(url);
             }
+        }, 500);
+
+        document.getElementById('apiUrl').addEventListener('input', function() {
+            debouncedApiNameUpdate(this.value);
         });
+
+        // Performance: Preload critical resources
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(() => {
+                // Preload JSZip for potential ZIP downloads
+                const link = document.createElement('link');
+                link.rel = 'modulepreload';
+                link.href = 'https://cdn.skypack.dev/jszip@3.10.1';
+                document.head.appendChild(link);
+            });
+        }
+
+        // Service Worker registration for caching (production optimization)
+        if ('serviceWorker' in navigator && location.protocol === 'https:') {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').catch(() => {
+                    // Service worker registration failed - silent fail
+                });
+            });
+        }
     </script>
 </body>
 </html>
