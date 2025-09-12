@@ -1,12 +1,22 @@
 {
   "name": "rapid-api-generator",
   "version": "1.0.0",
-  "description": "Rapid API Generator project",
-  "main": "index.js",
+  "description": "Examples demonstrating secure API key management for RapidAPI access in both Python and Node.js",
+  "main": "rapidapi_example.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node rapidapi_example.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docker:build:node": "docker build -f Dockerfile.node -t rapid-api-generator-node:latest .",
+    "docker:build:python": "docker build -f Dockerfile.python -t rapid-api-generator-python:latest .",
+    "docker:build": "npm run docker:build:node && npm run docker:build:python",
+    "docker:run:node": "docker run --rm --env-file .env rapid-api-generator-node:latest",
+    "docker:run:python": "docker run --rm --env-file .env rapid-api-generator-python:latest"
   },
-  "keywords": ["api", "generator"],
+  "keywords": ["api", "generator", "rapidapi", "security", "examples"],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.0"
+  }
 }
