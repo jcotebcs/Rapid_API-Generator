@@ -1,0 +1,15 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="12" fill="url(#gradient)"/>
+  <g transform="translate(16, 16)">
+    <!-- Lightning bolt icon -->
+    <path d="M18 2L11 22h5l-5 18 10-18h-6l7-20z" fill="white"/>
+    <!-- Code brackets around the lightning -->
+    <path d="M4 12l-2 4 2 4M28 12l2 4-2 4" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  </g>
+</svg>
