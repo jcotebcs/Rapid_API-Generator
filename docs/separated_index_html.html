@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RapidAPI Demo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>RapidAPI Demo</h1>
+            <p>Test RapidAPI endpoints with a beautiful interface</p>
+        </div>
+
+        <div class="main-content">
+            <div class="warning">
+                <strong>⚠️ Security Notice:</strong> Never commit your real API keys to GitHub. Use environment variables or secure key management in production.
+            </div>
+
+            <!-- API Key Configuration -->
+            <div class="api-section">
+                <h2>🔑 API Configuration</h2>
+                <div class="form-group">
+                    <label for="rapidapi-key">RapidAPI Key:</label>
+                    <input type="password" id="rapidapi-key" placeholder="Enter your RapidAPI key">
+                </div>
+                <div class="form-group">
+                    <label for="rapidapi-host">RapidAPI Host:</label>
+                    <input type="text" id="rapidapi-host" placeholder="e.g., weatherapi-com.p.rapidapi.com">
+                </div>
+            </div>
+
+            <!-- Weather API Example -->
+            <div class="api-section">
+                <h2>🌤️ Weather API Example</h2>
+                <div class="info">
+                    This example uses the WeatherAPI service. Set the host to <code>weatherapi-com.p.rapidapi.com</code>
+                </div>
+                <div class="form-group">
+                    <label for="city-input">City:</label>
+                    <input type="text" id="city-input" placeholder="Enter city name (e.g., London)" value="London">
+                </div>
+                <button class="btn" onclick="getWeather()">Get Weather</button>
+                <button class="btn btn-secondary" onclick="clearResponse('weather-response')">Clear</button>
+                <div id="weather-response"></div>
+            </div>
+
+            <!-- Quote API Example -->
+            <div class="api-section">
+                <h2>💭 Quotes API Example</h2>
+                <div class="info">
+                    This example uses the Quotes API service. Set the host to <code>famous-quotes4.p.rapidapi.com</code>
+                </div>
+                <div class="form-group">
+                    <label for="quote-category">Category:</label>
+                    <select id="quote-category">
+                        <option value="">Random</option>
+                        <option value="motivational">Motivational</option>
+                        <option value="inspirational">Inspirational</option>
+                        <option value="success">Success</option>
+                        <option value="wisdom">Wisdom</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="getQuote()">Get Quote</button>
+                <button class="btn btn-secondary" onclick="clearResponse('quote-response')">Clear</button>
+                <div id="quote-response"></div>
+            </div>
+
+            <!-- Custom API Testing -->
+            <div class="api-section">
+                <h2>🔧 Custom API Testing</h2>
+                <div class="form-group">
+                    <label for="custom-endpoint">Endpoint URL:</label>
+                    <input type="text" id="custom-endpoint" placeholder="https://api-name.p.rapidapi.com/endpoint">
+                </div>
+                <div class="form-group">
+                    <label for="http-method">HTTP Method:</label>
+                    <select id="http-method">
+                        <option value="GET">GET</option>
+                        <option value="POST">POST</option>
+                        <option value="PUT">PUT</option>
+                        <option value="DELETE">DELETE</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="request-body">Request Body (JSON):</label>
+                    <textarea id="request-body" rows="5" placeholder='{"key": "value"}'></textarea>
+                </div>
+                <button class="btn" onclick="makeCustomRequest()">Send Request</button>
+                <button class="btn btn-secondary" onclick="clearResponse('custom-response')">Clear</button>
+                <div id="custom-response"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
