@@ -1,22 +1,35 @@
 {
-  "name": "rapid-api-generator",
+  "name": "rapidapi-generator-web",
   "version": "1.0.0",
-  "description": "Examples demonstrating secure API key management for RapidAPI access in both Python and Node.js",
-  "main": "rapidapi_example.js",
+  "description": "RapidAPI Generator Web Application - Convert RapidAPI URLs to TypeScript code",
+  "keywords": ["rapidapi", "typescript", "generator", "api", "web"],
+  "author": "jcotebcs",
+  "license": "MIT",
   "scripts": {
-    "start": "node rapidapi_example.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "docker:build:node": "docker build -f Dockerfile.node -t rapid-api-generator-node:latest .",
-    "docker:build:python": "docker build -f Dockerfile.python -t rapid-api-generator-python:latest .",
-    "docker:build": "npm run docker:build:node && npm run docker:build:python",
-    "docker:run:node": "docker run --rm --env-file .env rapid-api-generator-node:latest",
-    "docker:run:python": "docker run --rm --env-file .env rapid-api-generator-python:latest"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "type-check": "tsc --noEmit"
   },
-  "keywords": ["api", "generator", "rapidapi", "security", "examples"],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "axios": "^1.6.0",
-    "dotenv": "^16.3.0"
-  }
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.37",
+    "@types/react-dom": "^18.2.15",
+    "@types/js-yaml": "^4.0.9",
+    "@typescript-eslint/eslint-plugin": "^6.10.0",
+    "@typescript-eslint/parser": "^6.10.0",
+    "@vitejs/plugin-react": "^4.1.0",
+    "eslint": "^8.53.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.4",
+    "typescript": "^5.2.2",
+    "vite": "^4.5.0"
+  },
+  "homepage": "https://jcotebcs.github.io/Rapid_API-Generator"
 }
