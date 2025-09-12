@@ -74,8 +74,83 @@ Rapid_API-Generator/
 ├── package.json         # Node.js dependencies
 ├── rapidapi_example.py  # Python example script
 ├── rapidapi_example.js  # Node.js example script
+├── Dockerfile.node      # Docker configuration for Node.js
+├── Dockerfile.python    # Docker configuration for Python
+├── .github/
+│   └── workflows/
+│       └── deploy.yml   # CI/CD pipeline configuration
 └── README.md           # This file
 ```
+
+## 🚀 Deployment
+
+### Docker Deployment
+
+Both examples can be containerized using Docker for consistent deployment across environments.
+
+#### Building Docker Images
+
+```bash
+# Build Node.js image
+npm run docker:build:node
+
+# Build Python image  
+npm run docker:build:python
+
+# Build both images
+npm run docker:build
+```
+
+#### Running with Docker
+
+```bash
+# Ensure you have a .env file with your RAPIDAPI_KEY
+cp .env.example .env
+# Edit .env with your actual API key
+
+# Run Node.js example
+npm run docker:run:node
+
+# Run Python example
+npm run docker:run:python
+```
+
+### Manual Docker Commands
+
+```bash
+# Build images manually
+docker build -f Dockerfile.node -t rapid-api-generator-node:latest .
+docker build -f Dockerfile.python -t rapid-api-generator-python:latest .
+
+# Run containers manually
+docker run --rm --env-file .env rapid-api-generator-node:latest
+docker run --rm --env-file .env rapid-api-generator-python:latest
+```
+
+### CI/CD Pipeline
+
+The project includes a GitHub Actions workflow (`.github/workflows/deploy.yml`) that:
+
+- **Lints and tests** both Node.js and Python code on every push and pull request
+- **Builds Docker images** to ensure containerization works correctly
+- **Deploys to GitHub Pages** on successful builds to the main branch
+
+The pipeline runs automatically and ensures code quality and deployment readiness.
+
+### Environment Variables for Production
+
+For production deployments, ensure you set the following environment variables:
+
+- `RAPIDAPI_KEY`: Your production RapidAPI key
+- `NODE_ENV`: Set to `production` for optimized performance
+- `RAPIDAPI_HOST`: Override if using a different API host
+
+### Security Considerations for Deployment
+
+- Never expose your `.env` file in production
+- Use separate API keys for development, staging, and production
+- Consider using container orchestration (Kubernetes, Docker Swarm) for scalability
+- Implement proper logging and monitoring in production environments
 
 ## 🔧 Customization
 
