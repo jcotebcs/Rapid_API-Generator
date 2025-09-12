@@ -1,0 +1,28 @@
+# Site settings for GitHub Pages
+title: Rapid API Generator
+description: A collection of examples demonstrating secure API key management for RapidAPI access in both Python and Node.js
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+theme: minima
+
+# GitHub Pages specific settings
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+
+# Social links (optional)
+github_username: jcotebcs
+
+# Exclude files from processing
+exclude:
+  - node_modules/
+  - .env
+  - .env.example
+  - requirements.txt
+  - package.json
+  - package-lock.json
+  - rapidapi_example.py
+  - rapidapi_example.js
+  - README.md
