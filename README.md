@@ -1,6 +1,27 @@
 # Rapid_API-Generator
 
-A collection of examples demonstrating secure API key management for RapidAPI access in both Python and Node.js.
+A web-based tool for generating secure API client code instantly from any API endpoint. Features both a modern web interface and command-line examples for Python and Node.js.
+
+## 🌐 Web Interface
+
+Visit the **[Live Web Generator](https://jcotebcs.github.io/Rapid_API-Generator)** to instantly generate API client code:
+
+### Features
+- **🎯 Simple Form Interface**: Enter API URL, select HTTP method, customize headers
+- **🔧 Multi-Language Support**: Generate both Python and Node.js client code
+- **📋 Copy & Download**: Easily copy code to clipboard or download as files
+- **🛡️ Security Best Practices**: Built-in environment variable management
+- **✨ Modern UI**: Clean, responsive design with tabbed code output
+- **🚀 Real-time Generation**: Instant code generation with live preview
+
+### How to Use
+1. Enter your API endpoint URL
+2. Select HTTP method (GET, POST, PUT, DELETE, PATCH)
+3. Customize API name and RapidAPI host (optional)
+4. Add additional headers in JSON format (optional)
+5. Click "Generate API Code"
+6. Copy or download the generated Python/Node.js code
+7. Use the provided .env template for secure API key management
 
 ## 🚀 Quick Start
 
