@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="RapidAPI Generator - Convert any API URL into production-ready TypeScript code instantly" />
+  <meta name="keywords" content="API client, TypeScript, code generator, React, Vite, OpenAPI, Swagger" />
+  <meta name="author" content="jcotebcs" />
+  <title>RapidAPI Generator</title>
+
+  <!-- Tailwind CSS (Production Build) -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.4/lib/index.css" rel="stylesheet" />
+
+  <!-- Custom Styles -->
+  <style>
+    :root {
+      --blue-collar-blue: #0055A4;
+      --blue-collar-green: #00C853;
+      --blue-collar-black: #1A1A1A;
+      --blue-collar-white: #F5F5F5;
+    }
+    .glass {
+      background: rgba(245, 245, 245, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(245, 245, 245, 0.2);
+    }
+    .code-highlight {
+      background: rgba(26, 26, 26, 0.3);
+      border: 1px solid rgba(245, 245, 245, 0.1);
+    }
+    .text-blue-collar-blue { color: var(--blue-collar-blue); }
+    .text-blue-collar-green { color: var(--blue-collar-green); }
+    .text-blue-collar-white { color: var(--blue-collar-white); }
+    .bg-blue-collar-blue { background-color: var(--blue-collar-blue); }
+    .bg-blue-collar-green { background-color: var(--blue-collar-green); }
+    .bg-blue-collar-black { background-color: var(--blue-collar-black); }
+    .bg-blue-collar-white { background-color: var(--blue-collar-white); }
+    .bg-gradient-to-br {
+      background: linear-gradient(to bottom right, var(--blue-collar-blue), var(--blue-collar-black), var(--blue-collar-green));
+    }
+    .text-transparent { color: transparent; }
+  </style>
+
+  <!-- React and ReactDOM (Production Build) -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-collar-blue via-blue-collar-black to-blue-collar-green min-h-screen">
+  <div id="root"></div>
+
+  <script>
+    (function () {
+      const { useState } = React;
+
+      const App = () => {
+        const [activeTab, setActiveTab] = useState('client');
+        const [apiUrl, setApiUrl] = useState('https://api.placeholder.com');
+        const [isGenerating, setIsGenerating] = useState(false);
+        const [generated, setGenerated] = useState(false);
+
+        const tabs = [
+          { id: 'types', label: 'Types', icon: '📄' },
+          { id: 'client', label: 'Client', icon: '⚙️' },
+          { id: 'examples', label: 'Examples', icon: '💡' },
+          { id: 'package', label: 'package.json', icon: '📦' },
+          { id: 'readme', label: 'README', icon: '📖' }
+        ];
+
+        const codeContent = {
+          types: `// Example TypeScript interfaces...`,
+          client: `// Example API client...`,
+          examples: `// Code examples...`,
+          package: `{ "name": "example-package", ... }`,
+          readme: `# Example README`
+        };
+
+        const handleGenerate = () => {
+          setIsGenerating(true);
+          setTimeout(() => {
+            setGenerated(true);
+            setIsGenerating(false);
+          }, 1500);
+        };
+
+        const downloadZip = () => {
+          const content = Object.entries(codeContent)
+            .map(([key, value]) => `${key}.ts\n${value}`)
+            .join('\n\n---\n\n');
+          const blob = new Blob([content], { type: 'text/plain' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'api-client.zip';
+          a.click();
+          URL.revokeObjectURL(url);
+        };
+
+        const copyCode = () => {
+          navigator.clipboard.writeText(codeContent[activeTab]).then(() => {
+            alert('Code copied to clipboard!');
+          });
+        };
+
+        return (
+          <div className="min-h-screen p-4">
+            <header className="text-center mb-8">
+              <h1 className="text-5xl font-bold text-blue-collar-green mb-2 bg-gradient-to-r from-blue-collar-blue to-blue-collar-green bg-clip-text text-transparent">
+                RapidAPI Generator
+              </h1>
+              <p className="text-xl text-blue-collar-white">
+                Convert any API URL into production-ready TypeScript code instantly
+              </p>
+            </header>
+
+            {/* Input Section */}
+            <div className="glass rounded-2xl p-6">
+              <label className="block text-blue-collar-white mb-2 font-medium">🌐 API URL</label>
+              <div className="flex gap-3 mb-4">
+                <input
+                  type="url"
+                  value={apiUrl}
+                  onChange={(e) => setApiUrl(e.target.value)}
+                  className="flex-1 p-3 bg-blue-collar-black/10 rounded-xl text-blue-collar-white"
+                />
+                <button onClick={handleGenerate} className="px-8 py-3 bg-blue-collar-green text-blue-collar-white rounded-xl">
+                  {isGenerating ? 'Generating...' : 'Generate'}
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(<App />);
+    })();
+  </script>
+</body>
+</html>
