@@ -40,3 +40,5 @@ package-lock.json
 # OS
 .DS_Store
 Thumbs.db
+
+RAPIDAPI_KEY=79eed379e8mshdbea58fa8491487p150935jsna2349478600f
