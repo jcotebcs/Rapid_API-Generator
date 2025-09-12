@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RapidAPI Generator - Interactive Testing Interface</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-rocket"></i> RapidAPI Generator</h1>
+            <p class="subtitle">Interactive API Testing Interface</p>
+        </header>
+
+        <div class="warning-banner">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>Security Notice:</strong> Never share your API keys publicly or commit them to repositories. 
+            This interface only stores your key temporarily in browser memory for testing purposes.
+        </div>
+
+        <div class="main-content">
+            <div class="config-section">
+                <h2><i class="fas fa-cog"></i> Configuration</h2>
+                
+                <div class="form-group">
+                    <label for="apiKey">
+                        <i class="fas fa-key"></i> RapidAPI Key:
+                        <span class="required">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="password" id="apiKey" placeholder="Enter your RapidAPI key here..." required>
+                        <button type="button" id="toggleKey" class="toggle-btn">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <small class="help-text">
+                        Get your API key from <a href="https://rapidapi.com/" target="_blank">RapidAPI.com</a>
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label for="apiSelect">
+                        <i class="fas fa-list"></i> Select API Example:
+                    </label>
+                    <select id="apiSelect">
+                        <option value="">Choose an example API...</option>
+                        <option value="weather">Weather API</option>
+                        <option value="quotes">Random Quotes API</option>
+                        <option value="joke">Dad Jokes API</option>
+                        <option value="trivia">Trivia Questions API</option>
+                        <option value="currency">Currency Exchange API</option>
+                        <option value="custom">Custom Endpoint</option>
+                    </select>
+                </div>
+
+                <div id="customEndpoint" class="form-group" style="display: none;">
+                    <label for="customUrl">
+                        <i class="fas fa-link"></i> Custom API URL:
+                    </label>
+                    <input type="url" id="customUrl" placeholder="https://your-api-endpoint.com">
+                    
+                    <label for="customHost">
+                        <i class="fas fa-server"></i> RapidAPI Host:
+                    </label>
+                    <input type="text" id="customHost" placeholder="your-api-host.rapidapi.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="requestMethod">
+                        <i class="fas fa-exchange-alt"></i> Request Method:
+                    </label>
+                    <select id="requestMethod">
+                        <option value="GET">GET</option>
+                        <option value="POST">POST</option>
+                        <option value="PUT">PUT</option>
+                        <option value="DELETE">DELETE</option>
+                    </select>
+                </div>
+
+                <div id="requestBody" class="form-group" style="display: none;">
+                    <label for="bodyContent">
+                        <i class="fas fa-file-code"></i> Request Body (JSON):
+                    </label>
+                    <textarea id="bodyContent" rows="6" placeholder='{"key": "value"}'></textarea>
+                </div>
+
+                <button id="testApi" class="btn-primary" disabled>
+                    <i class="fas fa-play"></i> Test API
+                </button>
+                <button id="clearResults" class="btn-secondary">
+                    <i class="fas fa-trash"></i> Clear Results
+                </button>
+            </div>
+
+            <div class="results-section">
+                <h2><i class="fas fa-chart-line"></i> API Response</h2>
+                
+                <div id="loadingIndicator" class="loading" style="display: none;">
+                    <i class="fas fa-spinner fa-spin"></i> Making API request...
+                </div>
+
+                <div id="responseContainer">
+                    <div class="placeholder">
+                        <i class="fas fa-cloud"></i>
+                        <p>API response will appear here after making a request</p>
+                    </div>
+                </div>
+
+                <div id="responseMetadata" style="display: none;">
+                    <h3>Response Details</h3>
+                    <div class="metadata-grid">
+                        <div class="metadata-item">
+                            <span class="label">Status:</span>
+                            <span id="responseStatus" class="value"></span>
+                        </div>
+                        <div class="metadata-item">
+                            <span class="label">Time:</span>
+                            <span id="responseTime" class="value"></span>
+                        </div>
+                        <div class="metadata-item">
+                            <span class="label">Size:</span>
+                            <span id="responseSize" class="value"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="footer-content">
+                <p>
+                    <i class="fab fa-github"></i> 
+                    <a href="https://github.com/jcotebcs/Rapid_API-Generator" target="_blank">
+                        View on GitHub
+                    </a>
+                </p>
+                <p>
+                    <i class="fas fa-book"></i> 
+                    <a href="https://docs.rapidapi.com/" target="_blank">
+                        RapidAPI Documentation
+                    </a>
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

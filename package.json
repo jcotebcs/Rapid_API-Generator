@@ -1,12 +1,23 @@
 {
   "name": "rapid-api-generator",
   "version": "1.0.0",
-  "description": "Rapid API Generator project",
-  "main": "index.js",
+  "description": "RapidAPI Generator with interactive web interface for testing APIs securely",
+  "main": "rapidapi_example.js",
   "scripts": {
+    "start": "node rapidapi_example.js",
+    "serve": "cd docs && python3 -m http.server 8000",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["api", "generator"],
-  "author": "",
-  "license": "ISC"
+  "keywords": ["api", "rapidapi", "generator", "testing", "frontend"],
+  "author": "jcotebcs",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.0"
+  },
+  "homepage": "https://jcotebcs.github.io/Rapid_API-Generator/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jcotebcs/Rapid_API-Generator.git"
+  }
 }
