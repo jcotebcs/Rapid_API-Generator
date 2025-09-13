@@ -26,3 +26,7 @@ exclude:
   - rapidapi_example.py
   - rapidapi_example.js
   - README.md
+
+# Include docs directory for GitHub Pages
+include:
+  - docs/
