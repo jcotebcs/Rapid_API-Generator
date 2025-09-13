@@ -6,6 +6,12 @@ A web-based tool for generating secure API client code instantly from any API en
 
 Visit the **[Live Web Generator](https://jcotebcs.github.io/Rapid_API-Generator)** to instantly generate API client code:
 
+The live demo site is deployed on GitHub Pages and includes:
+- **Interactive API Testing**: Test Weather API and Quotes API endpoints
+- **Custom API Support**: Test any RapidAPI endpoint with custom parameters
+- **Real-time Response Display**: See API responses formatted in real-time
+- **Security Features**: Built-in warnings and secure key management practices
+
 ### Features
 - **🎯 Simple Form Interface**: Enter API URL, select HTTP method, customize headers
 - **🔧 Multi-Language Support**: Generate both Python and Node.js client code
@@ -97,11 +103,34 @@ Rapid_API-Generator/
 ├── rapidapi_example.js  # Node.js example script
 ├── Dockerfile.node      # Docker configuration for Node.js
 ├── Dockerfile.python    # Docker configuration for Python
+├── docs/                # GitHub Pages deployment files
+│   ├── index.html       # Main web application
+│   ├── style_css.css    # Application styles
+│   └── script_js.js     # Application JavaScript
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml   # CI/CD pipeline configuration
 └── README.md           # This file
 ```
+
+## 🌐 Local Development
+
+To run the web interface locally for testing:
+
+```bash
+# Navigate to the docs folder
+cd docs
+
+# Start a local HTTP server
+python3 -m http.server 8000
+
+# Open your browser to http://localhost:8000
+```
+
+The local server allows you to:
+- Test the web interface before deployment
+- Debug API integrations with real or demo keys
+- Verify responsive design on different screen sizes
 
 ## 🚀 Deployment
 
