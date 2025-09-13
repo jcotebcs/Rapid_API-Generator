@@ -232,11 +232,16 @@
             class="input"
             value="https://api.placeholder.com"
             placeholder="Enter your API URL here..."
+            title="Enter a valid API URL to generate TypeScript client code"
+            aria-describedby="url-help"
           />
-          <button id="generateBtn" class="btn btn-primary">
+          <button id="generateBtn" class="btn btn-primary" title="Generate TypeScript client code (Ctrl+Enter)">
             Generate
           </button>
         </div>
+        <small id="url-help" style="color: rgba(245, 245, 245, 0.7); font-size: 0.875rem;">
+          💡 Tip: Use Ctrl+Enter (Cmd+Enter on Mac) to quickly generate code
+        </small>
       </div>
     </div>
 
@@ -537,6 +542,14 @@ export API_TOKEN=your_token_here
       // API URL input
       document.getElementById('apiUrl').addEventListener('input', (e) => {
         state.apiUrl = e.target.value;
+      });
+
+      // Add keyboard shortcut for generation (Ctrl/Cmd + Enter)
+      document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          e.preventDefault();
+          handleGenerate();
+        }
       });
 
       // Initialize with default content
