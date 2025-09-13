@@ -8,10 +8,7 @@
   <meta name="author" content="jcotebcs" />
   <title>RapidAPI Generator</title>
 
-  <!-- Tailwind CSS (Production Build) -->
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.4/lib/index.css" rel="stylesheet" />
-
-  <!-- Custom Styles -->
+  <!-- Inline CSS for self-contained functionality -->
   <style>
     :root {
       --blue-collar-blue: #0055A4;
@@ -19,121 +16,532 @@
       --blue-collar-black: #1A1A1A;
       --blue-collar-white: #F5F5F5;
     }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, var(--blue-collar-blue), var(--blue-collar-black), var(--blue-collar-green));
+      min-height: 100vh;
+      color: var(--blue-collar-white);
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem;
+      min-height: 100vh;
+    }
+    
     .glass {
       background: rgba(245, 245, 245, 0.1);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(245, 245, 245, 0.2);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
     }
-    .code-highlight {
+    
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .title {
+      font-size: 3rem;
+      font-weight: bold;
+      background: linear-gradient(45deg, var(--blue-collar-blue), var(--blue-collar-green));
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 0.5rem;
+    }
+    
+    .subtitle {
+      font-size: 1.25rem;
+      opacity: 0.9;
+    }
+    
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    
+    .label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    
+    .input-group {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    
+    .input {
+      flex: 1;
+      padding: 0.75rem;
       background: rgba(26, 26, 26, 0.3);
+      border: 1px solid rgba(245, 245, 245, 0.2);
+      border-radius: 0.75rem;
+      color: var(--blue-collar-white);
+      font-size: 1rem;
+    }
+    
+    .input:focus {
+      outline: none;
+      border-color: var(--blue-collar-green);
+    }
+    
+    .input::placeholder {
+      color: rgba(245, 245, 245, 0.5);
+    }
+    
+    .btn {
+      padding: 0.75rem 2rem;
+      border: none;
+      border-radius: 0.75rem;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .btn-primary {
+      background: var(--blue-collar-green);
+      color: var(--blue-collar-white);
+    }
+    
+    .btn-primary:hover:not(:disabled) {
+      background: #00a843;
+    }
+    
+    .btn-secondary {
+      background: var(--blue-collar-blue);
+      color: var(--blue-collar-white);
+    }
+    
+    .btn-secondary:hover:not(:disabled) {
+      background: #004a93;
+    }
+    
+    .output-section {
+      display: none;
+    }
+    
+    .output-section.show {
+      display: block;
+    }
+    
+    .output-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .output-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 0.75rem;
+    }
+    
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid rgba(245, 245, 245, 0.2);
+      padding-bottom: 1rem;
+    }
+    
+    .tab {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 0.5rem;
+      background: rgba(26, 26, 26, 0.3);
+      color: rgba(245, 245, 245, 0.7);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .tab.active {
+      background: var(--blue-collar-green);
+      color: var(--blue-collar-white);
+    }
+    
+    .tab:hover:not(.active) {
+      background: rgba(26, 26, 26, 0.5);
+    }
+    
+    .code-display {
+      background: rgba(26, 26, 26, 0.5);
       border: 1px solid rgba(245, 245, 245, 0.1);
+      border-radius: 0.75rem;
+      padding: 1rem;
+      overflow-x: auto;
     }
-    .text-blue-collar-blue { color: var(--blue-collar-blue); }
-    .text-blue-collar-green { color: var(--blue-collar-green); }
-    .text-blue-collar-white { color: var(--blue-collar-white); }
-    .bg-blue-collar-blue { background-color: var(--blue-collar-blue); }
-    .bg-blue-collar-green { background-color: var(--blue-collar-green); }
-    .bg-blue-collar-black { background-color: var(--blue-collar-black); }
-    .bg-blue-collar-white { background-color: var(--blue-collar-white); }
-    .bg-gradient-to-br {
-      background: linear-gradient(to bottom right, var(--blue-collar-blue), var(--blue-collar-black), var(--blue-collar-green));
+    
+    .code-display pre {
+      margin: 0;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
     }
-    .text-transparent { color: transparent; }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .loading {
+      opacity: 0.6;
+    }
   </style>
 
-  <!-- React and ReactDOM (Production Build) -->
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
 </head>
-<body class="bg-gradient-to-br from-blue-collar-blue via-blue-collar-black to-blue-collar-green min-h-screen">
-  <div id="root"></div>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1 class="title">RapidAPI Generator</h1>
+      <p class="subtitle">Convert any API URL into production-ready TypeScript code instantly</p>
+    </header>
+
+    <!-- Input Section -->
+    <div class="glass">
+      <div class="form-group">
+        <label class="label">🌐 API URL</label>
+        <div class="input-group">
+          <input
+            type="url"
+            id="apiUrl"
+            class="input"
+            value="https://api.placeholder.com"
+            placeholder="Enter your API URL here..."
+          />
+          <button id="generateBtn" class="btn btn-primary">
+            Generate
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Output Section -->
+    <div id="outputSection" class="glass output-section">
+      <div class="output-header">
+        <h2 class="output-title">Generated Code</h2>
+        <div class="button-group">
+          <button id="copyBtn" class="btn btn-secondary">📋 Copy</button>
+          <button id="downloadBtn" class="btn btn-primary">📦 Download</button>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab active" data-tab="types">📄 Types</button>
+        <button class="tab" data-tab="client">⚙️ Client</button>
+        <button class="tab" data-tab="examples">💡 Examples</button>
+        <button class="tab" data-tab="package">📦 package.json</button>
+        <button class="tab" data-tab="readme">📖 README</button>
+      </div>
+
+      <!-- Code Display -->
+      <div class="code-display">
+        <pre id="codeContent"></pre>
+      </div>
+    </div>
+  </div>
 
   <script>
-    (function () {
-      const { useState } = React;
+    // Application state
+    let state = {
+      activeTab: 'types',
+      apiUrl: 'https://api.placeholder.com',
+      isGenerating: false,
+      generated: false
+    };
 
-      const App = () => {
-        const [activeTab, setActiveTab] = useState('client');
-        const [apiUrl, setApiUrl] = useState('https://api.placeholder.com');
-        const [isGenerating, setIsGenerating] = useState(false);
-        const [generated, setGenerated] = useState(false);
+    // Code content templates
+    function getCodeContent(apiUrl) {
+      return {
+        types: `// TypeScript Type Definitions
+export interface ApiResponse<T = any> {
+  data: T;
+  success: boolean;
+  message?: string;
+}
 
-        const tabs = [
-          { id: 'types', label: 'Types', icon: '📄' },
-          { id: 'client', label: 'Client', icon: '⚙️' },
-          { id: 'examples', label: 'Examples', icon: '💡' },
-          { id: 'package', label: 'package.json', icon: '📦' },
-          { id: 'readme', label: 'README', icon: '📖' }
-        ];
+export interface ApiClient {
+  baseURL: string;
+  headers?: Record<string, string>;
+  timeout?: number;
+}
 
-        const codeContent = {
-          types: `// Example TypeScript interfaces...`,
-          client: `// Example API client...`,
-          examples: `// Code examples...`,
-          package: `{ "name": "example-package", ... }`,
-          readme: `# Example README`
-        };
+export interface RequestConfig {
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  endpoint: string;
+  data?: any;
+  params?: Record<string, string>;
+}`,
+        client: `// API Client Implementation
+import axios, { AxiosInstance } from 'axios';
 
-        const handleGenerate = () => {
-          setIsGenerating(true);
-          setTimeout(() => {
-            setGenerated(true);
-            setIsGenerating(false);
-          }, 1500);
-        };
+export class ApiClient {
+  private client: AxiosInstance;
 
-        const downloadZip = () => {
-          const content = Object.entries(codeContent)
-            .map(([key, value]) => `${key}.ts\n${value}`)
-            .join('\n\n---\n\n');
-          const blob = new Blob([content], { type: 'text/plain' });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = 'api-client.zip';
-          a.click();
-          URL.revokeObjectURL(url);
-        };
+  constructor(baseURL: string, headers: Record<string, string> = {}) {
+    this.client = axios.create({
+      baseURL,
+      headers: {
+        'Content-Type': 'application/json',
+        ...headers
+      },
+      timeout: 10000
+    });
+  }
 
-        const copyCode = () => {
-          navigator.clipboard.writeText(codeContent[activeTab]).then(() => {
-            alert('Code copied to clipboard!');
-          });
-        };
+  async get<T>(endpoint: string, params?: Record<string, string>): Promise<T> {
+    const response = await this.client.get(endpoint, { params });
+    return response.data;
+  }
 
-        return (
-          <div className="min-h-screen p-4">
-            <header className="text-center mb-8">
-              <h1 className="text-5xl font-bold text-blue-collar-green mb-2 bg-gradient-to-r from-blue-collar-blue to-blue-collar-green bg-clip-text text-transparent">
-                RapidAPI Generator
-              </h1>
-              <p className="text-xl text-blue-collar-white">
-                Convert any API URL into production-ready TypeScript code instantly
-              </p>
-            </header>
+  async post<T>(endpoint: string, data: any): Promise<T> {
+    const response = await this.client.post(endpoint, data);
+    return response.data;
+  }
+}`,
+        examples: `// Usage Examples
+import { ApiClient } from './api-client';
 
-            {/* Input Section */}
-            <div className="glass rounded-2xl p-6">
-              <label className="block text-blue-collar-white mb-2 font-medium">🌐 API URL</label>
-              <div className="flex gap-3 mb-4">
-                <input
-                  type="url"
-                  value={apiUrl}
-                  onChange={(e) => setApiUrl(e.target.value)}
-                  className="flex-1 p-3 bg-blue-collar-black/10 rounded-xl text-blue-collar-white"
-                />
-                <button onClick={handleGenerate} className="px-8 py-3 bg-blue-collar-green text-blue-collar-white rounded-xl">
-                  {isGenerating ? 'Generating...' : 'Generate'}
-                </button>
-              </div>
-            </div>
-          </div>
-        );
+// Initialize the client
+const apiClient = new ApiClient('${apiUrl}', {
+  'Authorization': 'Bearer YOUR_TOKEN_HERE'
+});
+
+// Example GET request
+async function fetchData() {
+  try {
+    const data = await apiClient.get('/endpoint');
+    console.log('Success:', data);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+// Example POST request
+async function createData(payload: any) {
+  try {
+    const result = await apiClient.post('/create', payload);
+    console.log('Created:', result);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}`,
+        package: `{
+  "name": "rapid-api-client",
+  "version": "1.0.0",
+  "description": "Generated API client for ${apiUrl}",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "jest"
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "jest": "^29.0.0"
+  }
+}`,
+        readme: `# API Client for ${apiUrl}
+
+Generated with RapidAPI Generator - Production-ready TypeScript API client.
+
+## Installation
+
+\`\`\`bash
+npm install
+\`\`\`
+
+## Usage
+
+\`\`\`typescript
+import { ApiClient } from './api-client';
+
+const client = new ApiClient('${apiUrl}');
+
+// Make requests
+const data = await client.get('/endpoint');
+\`\`\`
+
+## Features
+
+- ✅ TypeScript support
+- ✅ Error handling
+- ✅ Request/Response interceptors
+- ✅ Timeout configuration
+- ✅ Type-safe API calls
+
+## Configuration
+
+Set your API credentials in environment variables:
+
+\`\`\`bash
+export API_TOKEN=your_token_here
+\`\`\`
+`
+      };
+    }
+
+    // Update code display
+    function updateCodeDisplay() {
+      const codeContent = getCodeContent(state.apiUrl);
+      document.getElementById('codeContent').textContent = codeContent[state.activeTab];
+    }
+
+    // Handle generate button click
+    function handleGenerate() {
+      const apiUrlInput = document.getElementById('apiUrl');
+      const generateBtn = document.getElementById('generateBtn');
+      const outputSection = document.getElementById('outputSection');
+      
+      state.apiUrl = apiUrlInput.value.trim();
+      
+      // Validate URL
+      try {
+        new URL(state.apiUrl);
+      } catch (error) {
+        alert('Please enter a valid URL');
+        return;
+      }
+
+      state.isGenerating = true;
+      generateBtn.textContent = 'Generating...';
+      generateBtn.disabled = true;
+      generateBtn.classList.add('loading');
+
+      setTimeout(() => {
+        state.generated = true;
+        state.isGenerating = false;
+        generateBtn.textContent = 'Generate';
+        generateBtn.disabled = false;
+        generateBtn.classList.remove('loading');
+        
+        outputSection.classList.add('show');
+        updateCodeDisplay();
+        
+        // Scroll to output
+        outputSection.scrollIntoView({ behavior: 'smooth' });
+      }, 1500);
+    }
+
+    // Handle tab switching
+    function handleTabSwitch(tabName) {
+      // Update active tab
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+      
+      state.activeTab = tabName;
+      updateCodeDisplay();
+    }
+
+    // Handle copy functionality
+    async function handleCopy() {
+      const copyBtn = document.getElementById('copyBtn');
+      const codeContent = getCodeContent(state.apiUrl);
+      
+      try {
+        await navigator.clipboard.writeText(codeContent[state.activeTab]);
+        const originalText = copyBtn.textContent;
+        copyBtn.textContent = '✅ Copied!';
+        setTimeout(() => {
+          copyBtn.textContent = originalText;
+        }, 2000);
+      } catch (err) {
+        // Fallback for browsers that don't support clipboard API
+        const textArea = document.createElement('textarea');
+        textArea.value = codeContent[state.activeTab];
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        alert('Code copied to clipboard!');
+      }
+    }
+
+    // Handle download functionality
+    function handleDownload() {
+      const codeContent = getCodeContent(state.apiUrl);
+      const files = {
+        'types.ts': codeContent.types,
+        'api-client.ts': codeContent.client,
+        'examples.ts': codeContent.examples,
+        'package.json': codeContent.package,
+        'README.md': codeContent.readme
       };
 
-      const root = ReactDOM.createRoot(document.getElementById('root'));
-      root.render(<App />);
-    })();
+      // Create a text file with all content
+      const content = Object.entries(files)
+        .map(([filename, content]) => `// ${filename}\n${content}`)
+        .join('\n\n' + '='.repeat(50) + '\n\n');
+      
+      const blob = new Blob([content], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'api-client-bundle.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // Initialize event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+      // Generate button
+      document.getElementById('generateBtn').addEventListener('click', handleGenerate);
+      
+      // Copy button
+      document.getElementById('copyBtn').addEventListener('click', handleCopy);
+      
+      // Download button
+      document.getElementById('downloadBtn').addEventListener('click', handleDownload);
+      
+      // Tab buttons
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+          handleTabSwitch(e.target.dataset.tab);
+        });
+      });
+      
+      // API URL input
+      document.getElementById('apiUrl').addEventListener('input', (e) => {
+        state.apiUrl = e.target.value;
+      });
+
+      // Initialize with default content
+      updateCodeDisplay();
+    });
   </script>
 </body>
 </html>
