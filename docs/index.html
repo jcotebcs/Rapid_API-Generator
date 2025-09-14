@@ -8,6 +8,17 @@
   <meta name="author" content="jcotebcs" />
   <title>RapidAPI Generator</title>
 
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0055A4">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="RapidAPI Gen">
+  
+  <!-- Favicon and Icons -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230055A4'/%3E%3Cpath d='M16 20h32v4H16zm0 8h24v4H16zm0 8h28v4H16zm0 8h20v4H16z' fill='%2300C853'/%3E%3C/svg%3E">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='36' fill='%230055A4'/%3E%3Cpath d='M48 60h96v12H48zm0 24h72v12H48zm0 24h84v12H48zm0 24h60v12H48z' fill='%2300C853'/%3E%3C/svg%3E">
+
   <!-- Inline CSS for self-contained functionality -->
   <style>
     :root {
@@ -82,7 +93,7 @@
       align-items: center;
     }
     
-    .input {
+    .input, select {
       flex: 1;
       padding: 0.75rem;
       background: rgba(26, 26, 26, 0.3);
@@ -92,13 +103,44 @@
       font-size: 1rem;
     }
     
-    .input:focus {
+    .input:focus, select:focus {
       outline: none;
       border-color: var(--blue-collar-green);
     }
     
     .input::placeholder {
       color: rgba(245, 245, 245, 0.5);
+    }
+
+    .parameter-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+      align-items: center;
+    }
+
+    .parameter-input {
+      padding: 0.5rem;
+      border: 1px solid rgba(245, 245, 245, 0.2);
+      border-radius: 0.5rem;
+      background: rgba(26, 26, 26, 0.3);
+      color: var(--blue-collar-white);
+      font-size: 0.875rem;
+    }
+
+    .remove-param-btn {
+      padding: 0.5rem;
+      border: none;
+      border-radius: 0.5rem;
+      background: rgba(220, 53, 69, 0.3);
+      color: var(--blue-collar-white);
+      cursor: pointer;
+      font-size: 0.875rem;
+    }
+
+    .remove-param-btn:hover {
+      background: rgba(220, 53, 69, 0.5);
     }
     
     .btn {
@@ -223,25 +265,87 @@
 
     <!-- Input Section -->
     <div class="glass">
+      <!-- API Key Management -->
       <div class="form-group">
-        <label class="label">🌐 API URL</label>
+        <label class="label">🔑 RapidAPI Key</label>
+        <div class="input-group">
+          <input
+            type="password"
+            id="rapidApiKey"
+            class="input"
+            placeholder="Enter your RapidAPI key..."
+            title="Your RapidAPI key (stored securely in browser)"
+          />
+          <button id="saveKeyBtn" class="btn btn-secondary" title="Save key for session">
+            Save Key
+          </button>
+        </div>
+        <small style="color: rgba(245, 245, 245, 0.7); font-size: 0.875rem;">
+          🛡️ Key is stored locally in your browser and never sent to servers
+        </small>
+      </div>
+
+      <!-- API URL Input -->
+      <div class="form-group">
+        <label class="label">🌐 RapidAPI URL</label>
         <div class="input-group">
           <input
             type="url"
             id="apiUrl"
             class="input"
-            value="https://api.placeholder.com"
-            placeholder="Enter your API URL here..."
-            title="Enter a valid API URL to generate TypeScript client code"
+            value="https://weatherapi-com.p.rapidapi.com/current.json"
+            placeholder="Enter RapidAPI endpoint URL..."
+            title="Enter a RapidAPI endpoint URL"
             aria-describedby="url-help"
           />
-          <button id="generateBtn" class="btn btn-primary" title="Generate TypeScript client code (Ctrl+Enter)">
-            Generate
+          <button id="detectBtn" class="btn btn-secondary" title="Auto-detect API details">
+            Detect
           </button>
         </div>
         <small id="url-help" style="color: rgba(245, 245, 245, 0.7); font-size: 0.875rem;">
-          💡 Tip: Use Ctrl+Enter (Cmd+Enter on Mac) to quickly generate code
+          💡 Paste URL from RapidAPI documentation page
         </small>
+      </div>
+
+      <!-- API Details -->
+      <div class="form-group">
+        <label class="label">⚙️ API Configuration</label>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div>
+            <label style="font-size: 0.875rem; color: rgba(245, 245, 245, 0.8);">HTTP Method</label>
+            <select id="httpMethod" class="input">
+              <option value="GET">GET</option>
+              <option value="POST">POST</option>
+              <option value="PUT">PUT</option>
+              <option value="DELETE">DELETE</option>
+              <option value="PATCH">PATCH</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 0.875rem; color: rgba(245, 245, 245, 0.8);">Code Style</label>
+            <select id="codeStyle" class="input">
+              <option value="axios">Axios (Recommended)</option>
+              <option value="fetch">Fetch API</option>
+              <option value="rapidapi">RapidAPI SDK</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Parameters Section -->
+      <div id="parametersSection" class="form-group" style="display: none;">
+        <label class="label">📋 API Parameters</label>
+        <div id="parametersList"></div>
+        <button type="button" id="addParameterBtn" class="btn btn-secondary" style="margin-top: 0.5rem;">
+          ➕ Add Parameter
+        </button>
+      </div>
+
+      <!-- Generate Button -->
+      <div class="form-group" style="text-align: center;">
+        <button id="generateBtn" class="btn btn-primary" title="Generate RapidAPI client code (Ctrl+Enter)" style="padding: 1rem 3rem; font-size: 1.1rem;">
+          🚀 Generate RapidAPI Code
+        </button>
       </div>
     </div>
 
@@ -257,11 +361,11 @@
 
       <!-- Tabs -->
       <div class="tabs">
-        <button class="tab active" data-tab="types">📄 Types</button>
-        <button class="tab" data-tab="client">⚙️ Client</button>
-        <button class="tab" data-tab="examples">💡 Examples</button>
-        <button class="tab" data-tab="package">📦 package.json</button>
-        <button class="tab" data-tab="readme">📖 README</button>
+        <button class="tab active" data-tab="axios">⚡ Axios</button>
+        <button class="tab" data-tab="fetch">🌐 Fetch</button>
+        <button class="tab" data-tab="rapidapi">🚀 RapidAPI SDK</button>
+        <button class="tab" data-tab="env">🔐 Environment</button>
+        <button class="tab" data-tab="curl">💻 cURL</button>
       </div>
 
       <!-- Code Display -->
@@ -274,163 +378,364 @@
   <script>
     // Application state
     let state = {
-      activeTab: 'types',
-      apiUrl: 'https://api.placeholder.com',
+      activeTab: 'axios',
+      apiUrl: 'https://weatherapi-com.p.rapidapi.com/current.json',
+      apiKey: '',
+      httpMethod: 'GET',
+      codeStyle: 'axios',
+      parameters: [],
+      host: '',
       isGenerating: false,
       generated: false
     };
 
-    // Code content templates
-    function getCodeContent(apiUrl) {
-      return {
-        types: `// TypeScript Type Definitions
-export interface ApiResponse<T = any> {
-  data: T;
-  success: boolean;
-  message?: string;
-}
-
-export interface ApiClient {
-  baseURL: string;
-  headers?: Record<string, string>;
-  timeout?: number;
-}
-
-export interface RequestConfig {
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  endpoint: string;
-  data?: any;
-  params?: Record<string, string>;
-}`,
-        client: `// API Client Implementation
-import axios, { AxiosInstance } from 'axios';
-
-export class ApiClient {
-  private client: AxiosInstance;
-
-  constructor(baseURL: string, headers: Record<string, string> = {}) {
-    this.client = axios.create({
-      baseURL,
-      headers: {
-        'Content-Type': 'application/json',
-        ...headers
+    // Popular RapidAPI endpoints for suggestions
+    const POPULAR_APIS = {
+      'weatherapi-com.p.rapidapi.com': {
+        name: 'WeatherAPI',
+        endpoints: {
+          current: '/current.json?q={location}',
+          forecast: '/forecast.json?q={location}&days={days}',
+          search: '/search.json?q={query}'
+        },
+        defaultParams: { q: 'London' }
       },
-      timeout: 10000
-    });
-  }
+      'famous-quotes4.p.rapidapi.com': {
+        name: 'Famous Quotes',
+        endpoints: {
+          random: '/',
+          byCategory: '/?category={category}',
+          byAuthor: '/?author={author}'
+        }
+      },
+      'newsapi.org': {
+        name: 'NewsAPI',
+        endpoints: {
+          headlines: '/v2/top-headlines?country={country}',
+          everything: '/v2/everything?q={query}'
+        },
+        defaultParams: { country: 'us' }
+      }
+    };
 
-  async get<T>(endpoint: string, params?: Record<string, string>): Promise<T> {
-    const response = await this.client.get(endpoint, { params });
+    // Load saved API key from localStorage
+    function loadSavedKey() {
+      const savedKey = localStorage.getItem('rapidapi_key');
+      if (savedKey) {
+        document.getElementById('rapidApiKey').value = savedKey;
+        state.apiKey = savedKey;
+      }
+    }
+
+    // Save API key to localStorage
+    function saveApiKey() {
+      const keyInput = document.getElementById('rapidApiKey');
+      const key = keyInput.value.trim();
+      
+      if (!key) {
+        alert('Please enter an API key');
+        return;
+      }
+
+      if (key.length < 20) {
+        alert('API key seems too short. Please verify your RapidAPI key.');
+        return;
+      }
+
+      state.apiKey = key;
+      localStorage.setItem('rapidapi_key', key);
+      
+      const saveBtn = document.getElementById('saveKeyBtn');
+      const originalText = saveBtn.textContent;
+      saveBtn.textContent = '✅ Saved!';
+      setTimeout(() => {
+        saveBtn.textContent = originalText;
+      }, 2000);
+    }
+
+    // Extract host from URL
+    function extractHost(url) {
+      try {
+        const urlObj = new URL(url);
+        return urlObj.hostname;
+      } catch (error) {
+        return '';
+      }
+    }
+
+    // Detect API details from URL
+    function detectApiDetails() {
+      const apiUrl = document.getElementById('apiUrl').value.trim();
+      if (!apiUrl) return;
+
+      const host = extractHost(apiUrl);
+      state.host = host;
+      
+      // Check if it's a known API
+      const apiInfo = POPULAR_APIS[host];
+      if (apiInfo) {
+        // Auto-fill some parameters based on known APIs
+        if (apiInfo.defaultParams) {
+          state.parameters = Object.entries(apiInfo.defaultParams).map(([key, value]) => ({
+            name: key,
+            value: value
+          }));
+          updateParametersUI();
+        }
+        
+        alert(`✅ Detected: ${apiInfo.name}\nHost: ${host}`);
+      } else {
+        alert(`📡 Custom API detected\nHost: ${host}`);
+      }
+      
+      document.getElementById('parametersSection').style.display = 'block';
+    }
+
+    // Add parameter to the list
+    function addParameter(name = '', value = '') {
+      const parametersList = document.getElementById('parametersList');
+      const paramIndex = state.parameters.length;
+      
+      const paramRow = document.createElement('div');
+      paramRow.className = 'parameter-row';
+      paramRow.innerHTML = `
+        <input type="text" class="parameter-input" placeholder="Parameter name" value="${name}" data-index="${paramIndex}" data-field="name">
+        <input type="text" class="parameter-input" placeholder="Parameter value" value="${value}" data-index="${paramIndex}" data-field="value">
+        <button type="button" class="remove-param-btn" onclick="removeParameter(${paramIndex})">❌</button>
+      `;
+      
+      parametersList.appendChild(paramRow);
+      state.parameters.push({ name, value });
+      
+      // Add event listeners for parameter inputs
+      const inputs = paramRow.querySelectorAll('.parameter-input');
+      inputs.forEach(input => {
+        input.addEventListener('input', updateParameterValue);
+      });
+    }
+
+    // Remove parameter
+    function removeParameter(index) {
+      state.parameters.splice(index, 1);
+      updateParametersUI();
+    }
+
+    // Update parameter value
+    function updateParameterValue(event) {
+      const index = parseInt(event.target.dataset.index);
+      const field = event.target.dataset.field;
+      const value = event.target.value;
+      
+      if (state.parameters[index]) {
+        state.parameters[index][field] = value;
+      }
+    }
+
+    // Update parameters UI
+    function updateParametersUI() {
+      const parametersList = document.getElementById('parametersList');
+      parametersList.innerHTML = '';
+      
+      state.parameters.forEach((param, index) => {
+        const paramRow = document.createElement('div');
+        paramRow.className = 'parameter-row';
+        paramRow.innerHTML = `
+          <input type="text" class="parameter-input" placeholder="Parameter name" value="${param.name}" data-index="${index}" data-field="name">
+          <input type="text" class="parameter-input" placeholder="Parameter value" value="${param.value}" data-index="${index}" data-field="value">
+          <button type="button" class="remove-param-btn" onclick="removeParameter(${index})">❌</button>
+        `;
+        
+        parametersList.appendChild(paramRow);
+        
+        // Add event listeners
+        const inputs = paramRow.querySelectorAll('.parameter-input');
+        inputs.forEach(input => {
+          input.addEventListener('input', updateParameterValue);
+        });
+      });
+    }
+
+    // Generate RapidAPI code based on current settings
+    function generateRapidAPICode() {
+      const url = state.apiUrl;
+      const method = state.httpMethod;
+      const host = state.host || extractHost(url);
+      const apiKey = state.apiKey || 'YOUR_RAPIDAPI_KEY_HERE';
+      
+      // Build parameters object
+      const params = {};
+      state.parameters.forEach(param => {
+        if (param.name && param.value) {
+          params[param.name] = param.value;
+        }
+      });
+
+      const codes = {
+        axios: generateAxiosCode(url, method, host, apiKey, params),
+        fetch: generateFetchCode(url, method, host, apiKey, params),
+        rapidapi: generateRapidAPISDKCode(url, method, host, apiKey, params),
+        env: generateEnvCode(),
+        curl: generateCurlCode(url, method, host, apiKey, params)
+      };
+
+      return codes;
+    }
+
+    // Generate Axios code (matches RapidAPI examples)
+    function generateAxiosCode(url, method, host, apiKey, params) {
+      const hasParams = Object.keys(params).length > 0;
+      const paramsCode = hasParams ? `,\n  params: ${JSON.stringify(params, null, 4)}` : '';
+      
+      return `import axios from 'axios';
+
+const options = {
+  method: '${method}',
+  url: '${url}'${paramsCode},
+  headers: {
+    'X-RapidAPI-Key': '${apiKey}',
+    'X-RapidAPI-Host': '${host}'
+  }
+};
+
+async function makeRequest() {
+  try {
+    const response = await axios.request(options);
+    console.log(response.data);
     return response.data;
+  } catch (error) {
+    console.error('Error:', error.response?.data || error.message);
+    throw error;
   }
+}
 
-  async post<T>(endpoint: string, data: any): Promise<T> {
-    const response = await this.client.post(endpoint, data);
-    return response.data;
+// Call the function
+makeRequest();`;
+    }
+
+    // Generate Fetch code (matches RapidAPI examples)
+    function generateFetchCode(url, method, host, apiKey, params) {
+      const hasParams = Object.keys(params).length > 0;
+      let fetchUrl = url;
+      
+      if (hasParams && method === 'GET') {
+        const urlParams = new URLSearchParams(params);
+        fetchUrl = url.includes('?') ? `${url}&${urlParams}` : `${url}?${urlParams}`;
+      }
+
+      const bodyCode = hasParams && method !== 'GET' ? `,\n  body: JSON.stringify(${JSON.stringify(params, null, 4)})` : '';
+      const contentTypeHeader = method !== 'GET' ? `,\n    'Content-Type': 'application/json'` : '';
+
+      return `async function makeRequest() {
+  const url = '${fetchUrl}';
+  
+  const options = {
+    method: '${method}',
+    headers: {
+      'X-RapidAPI-Key': '${apiKey}',
+      'X-RapidAPI-Host': '${host}'${contentTypeHeader}
+    }${bodyCode}
+  };
+
+  try {
+    const response = await fetch(url, options);
+    
+    if (!response.ok) {
+      throw new Error(\`HTTP error! status: \${response.status}\`);
+    }
+    
+    const data = await response.json();
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.error('Error:', error.message);
+    throw error;
   }
-}`,
-        examples: `// Usage Examples
-import { ApiClient } from './api-client';
+}
 
-// Initialize the client
-const apiClient = new ApiClient('${apiUrl}', {
-  'Authorization': 'Bearer YOUR_TOKEN_HERE'
+// Call the function
+makeRequest();`;
+    }
+
+    // Generate RapidAPI SDK code
+    function generateRapidAPISDKCode(url, method, host, apiKey, params) {
+      const hasParams = Object.keys(params).length > 0;
+      const paramsCode = hasParams ? `\nconst params = ${JSON.stringify(params, null, 2)};\n` : '';
+
+      return `// Install: npm install @rapidapi/rapidapi-sdk
+import { RapidAPI } from '@rapidapi/rapidapi-sdk';
+
+const rapidapi = new RapidAPI({
+  key: '${apiKey}',
+  host: '${host}'
 });
 
-// Example GET request
-async function fetchData() {
-  try {
-    const data = await apiClient.get('/endpoint');
-    console.log('Success:', data);
+async function makeRequest() {
+  ${paramsCode}try {
+    const response = await rapidapi.request({
+      method: '${method}',
+      url: '${url}'${hasParams ? ',\n      params: params' : ''}
+    });
+    
+    console.log(response.data);
+    return response.data;
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error:', error.message);
+    throw error;
   }
 }
 
-// Example POST request
-async function createData(payload: any) {
-  try {
-    const result = await apiClient.post('/create', payload);
-    console.log('Created:', result);
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}`,
-        package: `{
-  "name": "rapid-api-client",
-  "version": "1.0.0",
-  "description": "Generated API client for ${apiUrl}",
-  "main": "index.js",
-  "type": "module",
-  "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "test": "jest"
-  },
-  "dependencies": {
-    "axios": "^1.6.0"
-  },
-  "devDependencies": {
-    "@types/node": "^20.0.0",
-    "typescript": "^5.0.0",
-    "jest": "^29.0.0"
-  }
-}`,
-        readme: `# API Client for ${apiUrl}
+// Call the function
+makeRequest();`;
+    }
 
-Generated with RapidAPI Generator - Production-ready TypeScript API client.
+    // Generate environment file
+    function generateEnvCode() {
+      return `# RapidAPI Configuration
+# Copy this to your .env file and replace with your actual API key
+# Get your API key from: https://rapidapi.com/
 
-## Installation
+RAPIDAPI_KEY=${state.apiKey || 'your_rapidapi_key_here'}
 
-\`\`\`bash
-npm install
-\`\`\`
+# Additional configuration
+NODE_ENV=development
+API_TIMEOUT=10000
 
-## Usage
+# Usage in your code:
+# const apiKey = process.env.RAPIDAPI_KEY;`;
+    }
 
-\`\`\`typescript
-import { ApiClient } from './api-client';
+    // Generate cURL code
+    function generateCurlCode(url, method, host, apiKey, params) {
+      const hasParams = Object.keys(params).length > 0;
+      let curlUrl = url;
+      let dataFlag = '';
 
-const client = new ApiClient('${apiUrl}');
+      if (hasParams) {
+        if (method === 'GET') {
+          const urlParams = new URLSearchParams(params);
+          curlUrl = url.includes('?') ? `${url}&${urlParams}` : `${url}?${urlParams}`;
+        } else {
+          dataFlag = ` \\\\\n  --data '${JSON.stringify(params)}'`;
+        }
+      }
 
-// Make requests
-const data = await client.get('/endpoint');
-\`\`\`
-
-## Features
-
-- ✅ TypeScript support
-- ✅ Error handling
-- ✅ Request/Response interceptors
-- ✅ Timeout configuration
-- ✅ Type-safe API calls
-
-## Configuration
-
-Set your API credentials in environment variables:
-
-\`\`\`bash
-export API_TOKEN=your_token_here
-\`\`\`
-`
-      };
+      return `curl --request ${method} \\\\\n  --url '${curlUrl}' \\\\\n  --header 'X-RapidAPI-Host: ${host}' \\\\\n  --header 'X-RapidAPI-Key: ${apiKey}'${method !== 'GET' ? ` \\\\\n  --header 'Content-Type: application/json'` : ''}${dataFlag}`;
     }
 
     // Update code display
     function updateCodeDisplay() {
-      const codeContent = getCodeContent(state.apiUrl);
-      document.getElementById('codeContent').textContent = codeContent[state.activeTab];
+      const codes = generateRapidAPICode();
+      document.getElementById('codeContent').textContent = codes[state.activeTab] || '';
     }
 
     // Handle generate button click
     function handleGenerate() {
-      const apiUrlInput = document.getElementById('apiUrl');
-      const generateBtn = document.getElementById('generateBtn');
-      const outputSection = document.getElementById('outputSection');
-      
-      state.apiUrl = apiUrlInput.value.trim();
-      
-      // Validate URL
+      // Validate inputs
+      if (!state.apiUrl) {
+        alert('Please enter an API URL');
+        return;
+      }
+
       try {
         new URL(state.apiUrl);
       } catch (error) {
@@ -438,29 +743,35 @@ export API_TOKEN=your_token_here
         return;
       }
 
+      if (!state.apiKey) {
+        if (!confirm('No API key saved. Continue without API key? (You can add it later)')) {
+          return;
+        }
+      }
+
+      const generateBtn = document.getElementById('generateBtn');
+      const outputSection = document.getElementById('outputSection');
+      
       state.isGenerating = true;
-      generateBtn.textContent = 'Generating...';
+      generateBtn.textContent = '🔄 Generating...';
       generateBtn.disabled = true;
-      generateBtn.classList.add('loading');
 
       setTimeout(() => {
         state.generated = true;
         state.isGenerating = false;
-        generateBtn.textContent = 'Generate';
+        generateBtn.textContent = '🚀 Generate RapidAPI Code';
         generateBtn.disabled = false;
-        generateBtn.classList.remove('loading');
         
         outputSection.classList.add('show');
         updateCodeDisplay();
         
         // Scroll to output
         outputSection.scrollIntoView({ behavior: 'smooth' });
-      }, 1500);
+      }, 1000);
     }
 
     // Handle tab switching
     function handleTabSwitch(tabName) {
-      // Update active tab
       document.querySelectorAll('.tab').forEach(tab => {
         tab.classList.remove('active');
       });
@@ -473,10 +784,11 @@ export API_TOKEN=your_token_here
     // Handle copy functionality
     async function handleCopy() {
       const copyBtn = document.getElementById('copyBtn');
-      const codeContent = getCodeContent(state.apiUrl);
+      const codes = generateRapidAPICode();
+      const codeText = codes[state.activeTab];
       
       try {
-        await navigator.clipboard.writeText(codeContent[state.activeTab]);
+        await navigator.clipboard.writeText(codeText);
         const originalText = copyBtn.textContent;
         copyBtn.textContent = '✅ Copied!';
         setTimeout(() => {
@@ -485,7 +797,7 @@ export API_TOKEN=your_token_here
       } catch (err) {
         // Fallback for browsers that don't support clipboard API
         const textArea = document.createElement('textarea');
-        textArea.value = codeContent[state.activeTab];
+        textArea.value = codeText;
         document.body.appendChild(textArea);
         textArea.select();
         document.execCommand('copy');
@@ -496,25 +808,20 @@ export API_TOKEN=your_token_here
 
     // Handle download functionality
     function handleDownload() {
-      const codeContent = getCodeContent(state.apiUrl);
-      const files = {
-        'types.ts': codeContent.types,
-        'api-client.ts': codeContent.client,
-        'examples.ts': codeContent.examples,
-        'package.json': codeContent.package,
-        'README.md': codeContent.readme
-      };
-
-      // Create a text file with all content
-      const content = Object.entries(files)
-        .map(([filename, content]) => `// ${filename}\n${content}`)
-        .join('\n\n' + '='.repeat(50) + '\n\n');
+      const codes = generateRapidAPICode();
+      const filename = `rapidapi-client-${Date.now()}.js`;
       
-      const blob = new Blob([content], { type: 'text/plain' });
+      const content = `// Generated by RapidAPI Generator
+// Generated on: ${new Date().toISOString()}
+// API URL: ${state.apiUrl}
+
+${codes[state.activeTab]}`;
+      
+      const blob = new Blob([content], { type: 'text/javascript' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'api-client-bundle.txt';
+      a.download = filename;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -523,6 +830,15 @@ export API_TOKEN=your_token_here
 
     // Initialize event listeners
     document.addEventListener('DOMContentLoaded', function() {
+      // Load saved API key
+      loadSavedKey();
+
+      // Save API key button
+      document.getElementById('saveKeyBtn').addEventListener('click', saveApiKey);
+      
+      // Detect API button
+      document.getElementById('detectBtn').addEventListener('click', detectApiDetails);
+      
       // Generate button
       document.getElementById('generateBtn').addEventListener('click', handleGenerate);
       
@@ -538,13 +854,31 @@ export API_TOKEN=your_token_here
           handleTabSwitch(e.target.dataset.tab);
         });
       });
+
+      // Add parameter button
+      document.getElementById('addParameterBtn').addEventListener('click', () => {
+        addParameter();
+      });
       
-      // API URL input
+      // Form inputs
       document.getElementById('apiUrl').addEventListener('input', (e) => {
         state.apiUrl = e.target.value;
+        state.host = extractHost(e.target.value);
       });
 
-      // Add keyboard shortcut for generation (Ctrl/Cmd + Enter)
+      document.getElementById('httpMethod').addEventListener('change', (e) => {
+        state.httpMethod = e.target.value;
+      });
+
+      document.getElementById('codeStyle').addEventListener('change', (e) => {
+        state.codeStyle = e.target.value;
+      });
+
+      document.getElementById('rapidApiKey').addEventListener('input', (e) => {
+        state.apiKey = e.target.value;
+      });
+
+      // Keyboard shortcuts
       document.addEventListener('keydown', (e) => {
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
           e.preventDefault();
@@ -552,9 +886,79 @@ export API_TOKEN=your_token_here
         }
       });
 
+      // Initialize host from default URL
+      state.host = extractHost(state.apiUrl);
+      
       // Initialize with default content
-      updateCodeDisplay();
+      if (state.apiKey) {
+        updateCodeDisplay();
+      }
+
+      // Register service worker for PWA functionality
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('service-worker.js')
+            .then(registration => {
+              console.log('SW registered: ', registration);
+              
+              // Show install prompt after service worker is ready
+              showInstallPrompt();
+            })
+            .catch(registrationError => {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
     });
+
+    // PWA Install Prompt
+    let deferredPrompt;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      console.log('beforeinstallprompt fired');
+      e.preventDefault();
+      deferredPrompt = e;
+      showInstallPrompt();
+    });
+
+    function showInstallPrompt() {
+      // Create install button if it doesn't exist
+      let installBtn = document.getElementById('installBtn');
+      if (!installBtn && deferredPrompt) {
+        installBtn = document.createElement('button');
+        installBtn.id = 'installBtn';
+        installBtn.className = 'btn btn-secondary';
+        installBtn.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 1000;';
+        installBtn.innerHTML = '📱 Install App';
+        installBtn.addEventListener('click', installApp);
+        document.body.appendChild(installBtn);
+      }
+    }
+
+    async function installApp() {
+      if (!deferredPrompt) return;
+
+      deferredPrompt.prompt();
+      const choiceResult = await deferredPrompt.userChoice;
+      
+      if (choiceResult.outcome === 'accepted') {
+        console.log('User accepted the install prompt');
+        document.getElementById('installBtn')?.remove();
+      } else {
+        console.log('User dismissed the install prompt');
+      }
+      
+      deferredPrompt = null;
+    }
+
+    // Handle app installation
+    window.addEventListener('appinstalled', (evt) => {
+      console.log('App was successfully installed');
+      document.getElementById('installBtn')?.remove();
+    });
+
+    // Make removeParameter function global for onclick handlers
+    window.removeParameter = removeParameter;
   </script>
 </body>
 </html>
