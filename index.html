@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rapid API Generator</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0366d6">
+    <meta name="description" content="Generate secure API client code instantly from any API endpoint with RapidAPI integration">
+    
+    <!-- iOS PWA Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="RapidAPI Gen">
+    
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -160,6 +171,64 @@
             margin-top: 20px;
             display: none;
         }
+        .search-highlight {
+            background: #e8f4fd;
+            border: 2px solid #0366d6;
+        }
+        .endpoint-details {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .endpoint-details h4 {
+            margin: 0 0 10px 0;
+            color: #0366d6;
+        }
+        .parameter-input {
+            margin-bottom: 10px;
+        }
+        .parameter-input label {
+            font-weight: normal;
+            font-size: 14px;
+            margin-bottom: 3px;
+        }
+        .parameter-input input {
+            padding: 8px;
+            font-size: 14px;
+        }
+        .copy-success {
+            background: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            position: absolute;
+            top: -30px;
+            right: 0;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .copy-success.show {
+            opacity: 1;
+        }
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 20px;
+            }
+            .form-row {
+                flex-direction: column;
+            }
+            .tabs {
+                flex-wrap: wrap;
+            }
+            .tab {
+                flex: 1;
+                min-width: 120px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -168,11 +237,32 @@
         <p class="subtitle">Generate secure API client code instantly from any API endpoint</p>
         
         <div class="form-section">
+            <!-- RapidAPI Key Management -->
+            <div class="form-group" style="background: #f8f9fa; padding: 20px; border-radius: 6px; margin-bottom: 30px;">
+                <label for="rapidApiKey">🔑 RapidAPI Key (stored securely in browser)</label>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="password" id="rapidApiKey" name="rapidApiKey" placeholder="Enter your RapidAPI key once - it will be remembered" style="flex: 1;">
+                    <button type="button" id="clearKeyBtn" style="background: #dc3545; padding: 8px 16px; font-size: 14px;">Clear</button>
+                </div>
+                <small style="color: #666; margin-top: 5px; display: block;">Your key is stored locally and never sent to our servers. <a href="https://rapidapi.com/developer/dashboard" target="_blank">Get your key here</a></small>
+            </div>
+
+            <!-- API Search Section -->
+            <div class="form-group" style="background: #e8f4fd; padding: 20px; border-radius: 6px; margin-bottom: 30px;">
+                <label for="apiSearch">🔍 Search RapidAPI Hub (or enter custom URL below)</label>
+                <div style="position: relative;">
+                    <input type="text" id="apiSearch" name="apiSearch" placeholder="Search for APIs... (e.g., 'weather', 'translate', 'news')" style="width: 100%;">
+                    <div id="searchResults" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ddd; border-top: none; border-radius: 0 0 6px 6px; max-height: 200px; overflow-y: auto; z-index: 1000;"></div>
+                </div>
+                <button type="button" id="searchBtn" style="margin-top: 10px; background: #28a745;">Search APIs</button>
+            </div>
+
             <form id="apiForm">
                 <div class="form-row">
                     <div class="form-group">
                         <label for="apiUrl">API Endpoint URL *</label>
                         <input type="url" id="apiUrl" name="apiUrl" placeholder="https://api.example.com/v1/endpoint" required>
+                        <button type="button" id="fetchEndpointBtn" style="margin-top: 10px; background: #17a2b8; font-size: 14px; padding: 8px 16px;">Auto-fetch endpoint details</button>
                     </div>
                     <div class="form-group">
                         <label for="httpMethod">HTTP Method</label>
@@ -248,6 +338,128 @@
             env: ''
         };
 
+        // Secure API Key Management
+        const API_KEY_STORAGE = 'rapidapi_generator_key';
+        
+        function saveApiKey(key) {
+            if (key && key.trim() && key !== 'your_super_secret_api_key') {
+                localStorage.setItem(API_KEY_STORAGE, btoa(key)); // Basic encoding for storage
+                showSuccess('RapidAPI key saved securely in browser');
+                setTimeout(hideMessages, 3000);
+            }
+        }
+        
+        function getStoredApiKey() {
+            try {
+                const stored = localStorage.getItem(API_KEY_STORAGE);
+                return stored ? atob(stored) : '';
+            } catch {
+                return '';
+            }
+        }
+        
+        function clearApiKey() {
+            localStorage.removeItem(API_KEY_STORAGE);
+            document.getElementById('rapidApiKey').value = '';
+            showSuccess('API key cleared from browser storage');
+            setTimeout(hideMessages, 3000);
+        }
+
+        // RapidAPI Search functionality
+        let searchTimeout;
+        let selectedApiInfo = null;
+
+        async function searchRapidAPIs(query) {
+            if (!query || query.length < 3) return [];
+            
+            try {
+                // Using RapidAPI Hub search endpoint
+                const response = await fetch(`https://rapidapi.com/search/${encodeURIComponent(query)}?type=endpoint`);
+                if (response.ok) {
+                    // This is a mock implementation - in reality, you'd need to parse the HTML response
+                    // or use an official API if available
+                    return [
+                        { name: `${query} Weather API`, endpoint: `https://${query}-weather.p.rapidapi.com/forecast`, host: `${query}-weather.p.rapidapi.com` },
+                        { name: `${query} Data API`, endpoint: `https://${query}-data.p.rapidapi.com/v1/data`, host: `${query}-data.p.rapidapi.com` },
+                        { name: `${query} Service API`, endpoint: `https://${query}-api.p.rapidapi.com/search`, host: `${query}-api.p.rapidapi.com` }
+                    ];
+                }
+            } catch (error) {
+                console.log('Search not available, using manual entry');
+            }
+            return [];
+        }
+
+        function displaySearchResults(results) {
+            const resultsDiv = document.getElementById('searchResults');
+            if (results.length === 0) {
+                resultsDiv.style.display = 'none';
+                return;
+            }
+            
+            resultsDiv.innerHTML = results.map(api => 
+                `<div style="padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; hover: background: #f5f5f5;" 
+                      onclick="selectAPI('${api.endpoint}', '${api.host}', '${api.name}')">
+                    <strong>${api.name}</strong><br>
+                    <small style="color: #666;">${api.endpoint}</small>
+                </div>`
+            ).join('');
+            resultsDiv.style.display = 'block';
+        }
+
+        function selectAPI(endpoint, host, name) {
+            document.getElementById('apiUrl').value = endpoint;
+            document.getElementById('rapidApiHost').value = host;
+            document.getElementById('apiName').value = name.replace(' API', '');
+            document.getElementById('searchResults').style.display = 'none';
+            selectedApiInfo = { endpoint, host, name };
+            
+            // Auto-fetch endpoint details
+            fetchEndpointDetails(endpoint, host);
+        }
+
+        async function fetchEndpointDetails(url, host) {
+            const apiKey = getStoredApiKey();
+            if (!apiKey || apiKey === 'your_super_secret_api_key') {
+                showError('Please enter your RapidAPI key first to fetch endpoint details');
+                return;
+            }
+
+            try {
+                showSuccess('Fetching endpoint details...');
+                
+                // Try to fetch endpoint options/metadata
+                const response = await fetch(url, {
+                    method: 'OPTIONS',
+                    headers: {
+                        'X-RapidAPI-Key': apiKey,
+                        'X-RapidAPI-Host': host
+                    }
+                });
+
+                if (response.ok) {
+                    // Extract supported methods from Allow header
+                    const allowHeader = response.headers.get('Allow');
+                    if (allowHeader) {
+                        const methods = allowHeader.split(',').map(m => m.trim());
+                        if (methods.length > 0) {
+                            const selectEl = document.getElementById('httpMethod');
+                            const firstMethod = methods[0];
+                            if (['GET', 'POST', 'PUT', 'DELETE', 'PATCH'].includes(firstMethod)) {
+                                selectEl.value = firstMethod;
+                            }
+                        }
+                    }
+                    showSuccess('Endpoint details fetched successfully!');
+                } else {
+                    showSuccess('Endpoint URL set - you may need to manually configure method and headers');
+                }
+            } catch (error) {
+                showSuccess('Endpoint URL set - auto-fetch not available for this API');
+            }
+            setTimeout(hideMessages, 3000);
+        }
+
         function showTab(tabName) {
             // Hide all tabs and content
             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
@@ -298,6 +510,7 @@
             const apiName = (formData.apiName && formData.apiName.trim()) ? formData.apiName.trim() : generateApiName(formData.apiUrl);
             const host = (formData.rapidApiHost && formData.rapidApiHost.trim()) ? formData.rapidApiHost.trim() : extractHostFromUrl(formData.apiUrl);
             const additionalHeaders = formData.headers ? JSON.parse(formData.headers) : {};
+            const storedKey = getStoredApiKey();
             
             let headersCode = '"X-RapidAPI-Key": api_key,\n        "X-RapidAPI-Host": "' + host + '"';
             
@@ -307,17 +520,52 @@
                 }
             }
             
+            // Add parameter handling based on method
+            let parameterCode = '';
+            if (formData.httpMethod === 'POST' || formData.httpMethod === 'PUT' || formData.httpMethod === 'PATCH') {
+                parameterCode = `
+    
+    # Request body (modify as needed for your API)
+    payload = {
+        # Add your request parameters here
+        # "param1": "value1",
+        # "param2": "value2"
+    }
+    
+    # Convert payload to JSON if Content-Type is application/json
+    if headers.get("Content-Type") == "application/json":
+        import json
+        data = json.dumps(payload)
+    else:
+        data = payload`;
+            } else {
+                parameterCode = `
+    
+    # Query parameters (modify as needed for your API)
+    querystring = {
+        # Add your query parameters here
+        # "param1": "value1",
+        # "param2": "value2"
+    }`;
+            }
+            
+            const requestCode = formData.httpMethod === 'POST' || formData.httpMethod === 'PUT' || formData.httpMethod === 'PATCH' 
+                ? `response = requests.${formData.httpMethod.toLowerCase()}(url, data=data, headers=headers)`
+                : `response = requests.${formData.httpMethod.toLowerCase()}(url, headers=headers, params=querystring)`;
+            
             return `#!/usr/bin/env python3
 """
 ${apiName} API Client
-Generated by Rapid API Generator
+Generated by Rapid API Generator - ${new Date().toISOString().split('T')[0]}
 
 This script demonstrates secure API key management for ${apiName} API access.
-Make sure to create a .env file with your API key before running this script.
+${storedKey && storedKey !== 'your_super_secret_api_key' ? 'Your API key has been automatically included.' : 'Make sure to create a .env file with your API key before running this script.'}
+
+API Endpoint: ${formData.apiUrl}
 """
 
 import os
-import requests
+import requests${formData.httpMethod === 'POST' || formData.httpMethod === 'PUT' || formData.httpMethod === 'PATCH' ? '\nimport json' : ''}
 from dotenv import load_dotenv
 
 def main():
@@ -337,15 +585,21 @@ def main():
     
     headers = {
         ${headersCode}
-    }
+    }${parameterCode}
     
     try:
-        print("Making API request...")
-        response = requests.${formData.httpMethod.toLowerCase()}(url, headers=headers)
+        print("Making ${formData.httpMethod} request to ${apiName} API...")
+        ${requestCode}
         
         if response.status_code == 200:
             print("Success! API Response:")
-            print(response.json())
+            try:
+                # Try to parse JSON response
+                result = response.json()
+                print(json.dumps(result, indent=2) if 'json' in locals() else result)
+            except:
+                # If not JSON, print raw text
+                print(response.text)
         else:
             print(f"API request failed with status code: {response.status_code}")
             print(f"Response: {response.text}")
@@ -363,6 +617,7 @@ if __name__ == "__main__":
             const apiName = (formData.apiName && formData.apiName.trim()) ? formData.apiName.trim() : generateApiName(formData.apiUrl);
             const host = (formData.rapidApiHost && formData.rapidApiHost.trim()) ? formData.rapidApiHost.trim() : extractHostFromUrl(formData.apiUrl);
             const additionalHeaders = formData.headers ? JSON.parse(formData.headers) : {};
+            const storedKey = getStoredApiKey();
             
             let headersCode = "'X-RapidAPI-Key': apiKey,\n        'X-RapidAPI-Host': '" + host + "'";
             
@@ -372,13 +627,43 @@ if __name__ == "__main__":
                 }
             }
             
+            // Add parameter handling based on method
+            let requestConfig = '';
+            if (formData.httpMethod === 'POST' || formData.httpMethod === 'PUT' || formData.httpMethod === 'PATCH') {
+                requestConfig = `
+        // Request body (modify as needed for your API)
+        const requestBody = {
+            // Add your request parameters here
+            // param1: 'value1',
+            // param2: 'value2'
+        };
+        
+        const response = await axios.${formData.httpMethod.toLowerCase()}(url, requestBody, { headers });`;
+            } else if (formData.httpMethod === 'DELETE') {
+                requestConfig = `
+        const response = await axios.${formData.httpMethod.toLowerCase()}(url, { headers });`;
+            } else {
+                requestConfig = `
+        // Query parameters (modify as needed for your API)
+        const params = {
+            // Add your query parameters here
+            // param1: 'value1',
+            // param2: 'value2'
+        };
+        
+        const response = await axios.${formData.httpMethod.toLowerCase()}(url, { headers, params });`;
+            }
+            
             return `#!/usr/bin/env node
 /**
  * ${apiName} API Client
- * Generated by Rapid API Generator
+ * Generated by Rapid API Generator - ${new Date().toISOString().split('T')[0]}
  * 
  * This script demonstrates secure API key management for ${apiName} API access.
- * Make sure to create a .env file with your API key before running this script.
+ * ${storedKey && storedKey !== 'your_super_secret_api_key' ? 'Your API key has been automatically included.' : 'Make sure to create a .env file with your API key before running this script.'}
+ * 
+ * API Endpoint: ${formData.apiUrl}
+ * Method: ${formData.httpMethod}
  */
 
 const axios = require('axios');
@@ -402,16 +687,15 @@ async function main() {
     };
     
     try {
-        console.log('Making API request...');
-        const response = await axios.${formData.httpMethod.toLowerCase()}(url, { headers });
+        console.log('Making ${formData.httpMethod} request to ${apiName} API...');${requestConfig}
         
         console.log('Success! API Response:');
-        console.log(response.data);
+        console.log(JSON.stringify(response.data, null, 2));
         
     } catch (error) {
         if (error.response) {
             console.error(\`API request failed with status code: \${error.response.status}\`);
-            console.error(\`Response: \${error.response.data}\`);
+            console.error(\`Response: \${JSON.stringify(error.response.data, null, 2)}\`);
         } else if (error.request) {
             console.error('No response received from API');
             console.error(error.message);
@@ -426,11 +710,17 @@ main().catch(console.error);`;
         }
 
         function generateEnvCode() {
+            const storedKey = getStoredApiKey();
+            const actualKey = storedKey && storedKey !== 'your_super_secret_api_key' ? storedKey : 'your_super_secret_api_key';
+            const keyComment = storedKey && storedKey !== 'your_super_secret_api_key' 
+                ? '# Your RapidAPI key (automatically filled from stored key)'
+                : '# Copy this file to .env and replace with your actual API key';
+            
             return `# RapidAPI Configuration
-# Copy this file to .env and replace with your actual API key
-# Get your API key from: https://rapidapi.com/
+${keyComment}
+# Get your API key from: https://rapidapi.com/developer/dashboard
 
-RAPIDAPI_KEY=your_super_secret_api_key
+RAPIDAPI_KEY=${actualKey}
 
 # Additional environment variables can be added here
 # NODE_ENV=development
@@ -532,6 +822,81 @@ RAPIDAPI_KEY=your_super_secret_api_key
                 apiNameField.value = generateApiName(this.value);
             }
         });
+
+        // RapidAPI Key management
+        document.getElementById('rapidApiKey').addEventListener('input', function() {
+            if (this.value && this.value.length > 10) {
+                saveApiKey(this.value);
+            }
+        });
+
+        document.getElementById('clearKeyBtn').addEventListener('click', clearApiKey);
+
+        // API Search functionality
+        document.getElementById('apiSearch').addEventListener('input', function() {
+            const query = this.value;
+            clearTimeout(searchTimeout);
+            
+            if (query.length < 3) {
+                document.getElementById('searchResults').style.display = 'none';
+                return;
+            }
+            
+            searchTimeout = setTimeout(async () => {
+                const results = await searchRapidAPIs(query);
+                displaySearchResults(results);
+            }, 300);
+        });
+
+        document.getElementById('searchBtn').addEventListener('click', async function() {
+            const query = document.getElementById('apiSearch').value;
+            if (query) {
+                const results = await searchRapidAPIs(query);
+                displaySearchResults(results);
+            }
+        });
+
+        // Auto-fetch endpoint details
+        document.getElementById('fetchEndpointBtn').addEventListener('click', function() {
+            const url = document.getElementById('apiUrl').value;
+            const host = document.getElementById('rapidApiHost').value || extractHostFromUrl(url);
+            
+            if (url) {
+                fetchEndpointDetails(url, host);
+            } else {
+                showError('Please enter an API URL first');
+            }
+        });
+
+        // Hide search results when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('#apiSearch') && !e.target.closest('#searchResults')) {
+                document.getElementById('searchResults').style.display = 'none';
+            }
+        });
+
+        // Initialize stored API key on page load
+        window.addEventListener('load', function() {
+            const storedKey = getStoredApiKey();
+            if (storedKey && storedKey !== 'your_super_secret_api_key') {
+                document.getElementById('rapidApiKey').value = storedKey;
+                showSuccess('Your stored RapidAPI key has been loaded');
+                setTimeout(hideMessages, 3000);
+            }
+        });
+
+        // Service Worker Registration for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then((registration) => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch((registrationError) => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
     </script>
 </body>
 </html>

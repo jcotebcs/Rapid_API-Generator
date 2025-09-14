@@ -1,0 +1,40 @@
+{
+  "name": "Rapid API Generator",
+  "short_name": "RapidAPI Gen",
+  "description": "Generate secure API client code instantly from any API endpoint with RapidAPI integration",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#667eea",
+  "theme_color": "#0366d6",
+  "orientation": "portrait-primary",
+  "categories": ["productivity", "developer", "utilities"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0yIDEyQzIgNi40NzcgNi40NzcgMiAxMiAyUzIyIDYuNDc3IDIyIDEyIDIxLjc5OSAyMS4yNSAyMSAyMUgxM1YxOUgxOUM0MTYgMTggMTcgMTUuMzEzIDE3IDEyUzE1LjMxMyA3IDEyIDdTNyA5LjY4NyA3IDEyIDkuNjg3IDE3IDEyIDE3SDEzVjE5SDEyQzYuNDc3IDE5IDIgMTcuNTIzIDIgMTJaIiBmaWxsPSIjMDM2NmQ2Ii8+PHBhdGggZD0iTTEyIDlDMTMuMTA0NiA5IDE0IDkuODk1NCAxNCAxMUMxNCA4LjIzODU4IDExLjc2MTQgNiA5IDZDNi4yMzg1OCA2IDQgOC4yMzg1OCA0IDExQzQgMTMuNzYxNCA2LjIzODU4IDE2IDkgMTZIMTJWMTRIOUM3LjM0MzE1IDE0IDYgMTIuNjU2OSA2IDExQzYgOS4zNDMxNSA3LjM0MzE1IDggOSA4QzEwLjY1NjkgOCAxMiA5LjM0MzE1IDEyIDExWiIgZmlsbD0iIzA2N2Y5OSIvPjwvc3ZnPg==",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxwYXRoIGQ9Ik0yIDEyQzIgNi40NzcgNi40NzcgMiAxMiAyUzIyIDYuNDc3IDIyIDEyIDIxLjc5OSAyMS4yNSAyMSAyMUgxM1YxOUgxOUM0MTYgMTggMTcgMTUuMzEzIDE3IDEyUzE1LjMxMyA3IDEyIDdTNyA5LjY4NyA3IDEyIDkuNjg3IDE3IDEyIDE3SDEzVjE5SDEyQzYuNDc3IDE5IDIgMTcuNTIzIDIgMTJaIiBmaWxsPSIjMDM2NmQ2Ii8+PHBhdGggZD0iTTEyIDlDMTMuMTA0NiA5IDE0IDkuODk1NCAxNCAxMUMxNCA4LjIzODU4IDExLjc2MTQgNiA5IDZDNi4yMzg1OCA2IDQgOC4yMzg1OCA0IDExQzQgMTMuNzYxNCA2LjIzODU4IDE2IDkgMTZIMTJWMTRIOUM3LjM0MzE1IDE0IDYgMTIuNjU2OSA2IDExQzYgOS4zNDMxNSA3LjM0MzE1IDggOSA4QzEwLjY1NjkgOCAxMiA5LjM0MzE1IDEyIDExWiIgZmlsbD0iIzA2N2Y5OSIvPjwvc3ZnPg==",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Generate Code",
+      "short_name": "Generate",
+      "description": "Quickly generate API client code",
+      "url": "/#generate",
+      "icons": [
+        {
+          "src": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOTYiIGhlaWdodD0iOTYiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNOSAyMkMxNC41MjI4IDIyIDIwIDIwLjE2IDIwIDEySDIyQzIyIDIwLjE2IDEzLjI1IDI0IDkgMjRDNi44MzQ0NSAyNCA0LjMwMzU5IDIzLjM1MzEgMiAyMEMzLjM0Mzc1IDIxLjk5MzggNS44MTI1IDIyIDkgMjJaIiBmaWxsPSIjMDM2NmQ2Ii8+PC9zdmc+",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ],
+  "scope": "/",
+  "lang": "en",
+  "dir": "ltr"
+}
